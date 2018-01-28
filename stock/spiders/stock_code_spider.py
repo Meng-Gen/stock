@@ -1,5 +1,6 @@
 import scrapy
 
+from stock.items import EndOfDocumentItem
 from stock.items import StockCodeItem
 
 from datetime import datetime
@@ -27,6 +28,7 @@ class StockCodeSpider(scrapy.Spider):
             if len(entries) != 6: 
                 continue
             yield self._build_item(entries)
+        yield EndOfDocumentItem()
 
     def _build_item(self, entries):
         item = StockCodeItem()

@@ -8,6 +8,9 @@
 import scrapy
 
 
+class EndOfDocumentItem(scrapy.Item):
+	pass
+
 class StockCodeItem(scrapy.Item):
     code = scrapy.Field()
     name = scrapy.Field()
