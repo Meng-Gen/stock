@@ -30,16 +30,30 @@ class StockCode(Base):
     
 
 class StockCodeStore():
+    """A store to manipulate StockCode table in the stock database.
+
+    We leverage SQLAlchemy ORM to manipulate StockCode table in the stock
+    database (MySQL).
+    """
+
     cached_items = []
 
     def add(self, item):
-        """
+        """Add a StockCodeItem into cached items.
+
+        Add a StockCodeItem into the list of cached items. Call flush() method
+        to persist all cached items.
+
         Args:
-            item: A stock.items.StockCodeItem
+            item: A StockCodeItem
         """
         self.cached_items.append(item)
 
     def flush(self):
+        """Flush all cached items into MySQL database.
+
+        Flush all cached items into MySQL database and clear all cached items.
+        """
         session = Session()
         for item in self.cached_items:
             session.add(self._build_item(item))
@@ -48,6 +62,16 @@ class StockCodeStore():
         del self.cached_items[:]
 
     def _build_item(self, item):
+        """Build a StockCode from a StockCodeItem.
+
+        Build a StockCode from a StockCodeItem to adapt SQLAlchemy ORM.
+
+        Args:
+            item: A StockCodeItem
+
+        Returns:
+            A StockCode instance (SQLAlchemy ORM)
+        """
         return StockCode(
             code=item['code'], 
             name=item['name'],

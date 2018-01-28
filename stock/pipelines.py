@@ -14,8 +14,18 @@ class StockCodePipeline(object):
     store = StockCodeStore()
 
     def process_item(self, item, spider):
+        """Process the parsed item.
+
+        Process the parsed item. If the item is a StockCodeItem, add it in the
+        store as a cached item (going to be flushed into the store). If the
+        item is an EndOfDocumentItem, flush all cached items into the store.
+
+        Args:
+            item: A StockCodeItem
+            spider: A StockCodeSpider
+        """
         if isinstance(item, StockCodeItem):
             self.store.add(item)
         elif isinstance(item, EndOfDocumentItem):
-        	self.store.flush()
+            self.store.flush()
         return item
