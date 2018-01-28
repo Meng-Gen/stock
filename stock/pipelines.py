@@ -29,3 +29,7 @@ class StockCodePipeline(object):
         elif isinstance(item, EndOfDocumentItem):
             self.store.flush()
         return item
+
+class BalanceSheetPipeline(object):
+    def process_item(self, item, spider):
+        print item
