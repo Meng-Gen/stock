@@ -2,8 +2,8 @@ import scrapy
 
 from stock.items import EndOfDocumentItem
 from stock.items import FinancialStatementItem
-
-#from datetime import datetime
+from stock.spiders import datetime_utils
+from stock.spiders import metric_value_utils
 
 
 class BalanceSheetSpider(scrapy.Spider):
@@ -23,10 +23,7 @@ class BalanceSheetSpider(scrapy.Spider):
 
     def parse(self, response):
         title, stock_code = self._parse_title_and_stock_code(response)
-        #print title
         unit_of_metric_value = self._parse_unit_of_metric_value(response)
-        #print unit_of_metric_value
-        #"""
 
         XPATH_ROOT = '//*[@id="SysJustIFRAMEDIV"]/table/tr[2]/td[2]/form/table[1]/tr/td/table/tr'
         rows = response.xpath(XPATH_ROOT)
@@ -45,11 +42,14 @@ class BalanceSheetSpider(scrapy.Spider):
             for j in range(1, len(name_and_values)):
                 item = FinancialStatementItem()
                 item['title'] = title
-                item['statement_date'] = name_and_statement_dates[j]
+                item['statement_date'] = datetime_utils. \
+                    build_datetime_from_roc_era(name_and_statement_dates[j])
                 item['stock_code'] = stock_code
                 item['metric_index'] = i - 1
                 item['metric_name'] = name_and_values[0]
-                item['metric_value'] = name_and_values[j]
+                item['metric_value'] = \
+                    metric_value_utils.normalize(name_and_values[j]) * \
+                    unit_of_metric_value
                 yield item
         yield EndOfDocumentItem()
 
