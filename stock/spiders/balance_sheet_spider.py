@@ -31,8 +31,6 @@ class BalanceSheetSpider(scrapy.Spider):
         # Parse the first row. It is the content of statement dates. The first
         # entry is the name and then the following entries are statement dates.
         name_and_statement_dates = rows[0].xpath('td/text()').extract()
-        #name = name_and_statement_dates[0]
-        #statement_dates = name_and_statement_dates[1:]
 
         # Parse the following rest rows. Each row is containing of metrics of
         # different statement dates. The first entry is the name and then the
