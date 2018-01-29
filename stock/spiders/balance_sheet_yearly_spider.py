@@ -2,12 +2,12 @@ import scrapy
 
 from stock.items import EndOfDocumentItem
 from stock.items import FinancialStatementItem
-from stock.spiders import datetime_utils
-from stock.spiders import metric_value_utils
+from stock.utils import datetime_utils
+from stock.utils import metric_value_utils
 
 
-class BalanceSheetSpider(scrapy.Spider):
-    name = "BalanceSheet"
+class BalanceSheetYearlySpider(scrapy.Spider):
+    name = "BalanceSheetYearly"
     custom_settings = {
         'ITEM_PIPELINES': {
             'stock.pipelines.BalanceSheetPipeline': 300
