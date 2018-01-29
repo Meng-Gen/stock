@@ -23,7 +23,7 @@ class StockCodeItem(scrapy.Item):
     crawled_at = scrapy.Field()
 
 
-class FinancialStatementItem(scrapy.Item):
+class FinancialStatementEntryItem(scrapy.Item):
     title = scrapy.Field()
     statement_date = scrapy.Field()
     stock_code = scrapy.Field()

@@ -1,7 +1,7 @@
 import scrapy
 
 from stock.items import EndOfDocumentItem
-from stock.items import FinancialStatementItem
+from stock.items import FinancialStatementEntryItem
 from stock.utils import datetime_utils
 from stock.utils import metric_value_utils
 
@@ -10,7 +10,7 @@ class BalanceSheetQuarterlySpider(scrapy.Spider):
     name = "BalanceSheetQuarterly"
     custom_settings = {
         'ITEM_PIPELINES': {
-            'stock.pipelines.BalanceSheetPipeline': 300
+            'stock.pipelines.FinancialStatementItemPipeline': 300
         }
     }
 
@@ -38,7 +38,7 @@ class BalanceSheetQuarterlySpider(scrapy.Spider):
         for i in range(1, len(rows)):
             name_and_values = rows[i].xpath('td/text()').extract()
             for j in range(1, len(name_and_values)):
-                item = FinancialStatementItem()
+                item = FinancialStatementEntryItem()
                 item['title'] = title
                 item['statement_date'] = datetime_utils. \
                     build_datetime_from_roc_era_with_quarter(name_and_statement_dates[j])
