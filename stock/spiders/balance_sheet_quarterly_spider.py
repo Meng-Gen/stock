@@ -10,7 +10,7 @@ class BalanceSheetQuarterlySpider(scrapy.Spider):
     name = "BalanceSheetQuarterly"
     custom_settings = {
         'ITEM_PIPELINES': {
-            'stock.pipelines.FinancialStatementItemPipeline': 300
+            'stock.pipelines.FinancialStatementEntryPipeline': 300
         }
     }
 
@@ -73,12 +73,12 @@ class BalanceSheetQuarterlySpider(scrapy.Spider):
 
         titles = response.xpath(XPATH_ROOT).extract()
         if len(titles) != 1:
-            raise ValueError('The length of titles is not equal to 1: {0}'.format(titles))
+            raise ValueError(u'The length of titles is not equal to 1: {0}'.format(titles))
 
         title = titles[0]
         title_and_stock_code = title.split('-')
         if len(title_and_stock_code) != 2:
-            raise ValueError('Could not parse title: {0}'.format(title))
+            raise ValueError(u'Could not parse title: {0}'.format(title))
 
         return title_and_stock_code
 
@@ -100,10 +100,10 @@ class BalanceSheetQuarterlySpider(scrapy.Spider):
 
         units = response.xpath(XPATH_ROOT).extract()
         if len(units) != 1:
-            raise ValueError('The length of units is not equal to 1: {0}'.format(units))
+            raise ValueError(u'The length of units is not equal to 1: {0}'.format(units))
 
         unit = units[0]
         if unit == u'\u55ae\u4f4d:\u767e\u842c':
             return 1000000
         else:
-            raise ValueError('Could not parse unit: {0}'.format(unit))
+            raise ValueError(u'Could not parse unit: {0}'.format(unit))

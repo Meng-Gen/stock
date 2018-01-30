@@ -8,7 +8,7 @@ def build_datetime_from_roc_era(data):
 def build_datetime_from_roc_era_with_quarter(data):
     roc_era_and_quarter = data.split('.')
     if len(roc_era_and_quarter) != 2:
-        raise ValueError('Could not parse ROC era and quarter: {0}'.format(data))
+        raise ValueError(u'Could not parse ROC era and quarter: {0}'.format(data))
 
     roc_era, quarter = roc_era_and_quarter
     year = int(roc_era) + 1911
@@ -21,4 +21,4 @@ def build_datetime_from_roc_era_with_quarter(data):
     elif quarter == '4Q':
         return datetime(year=year, month=12, day=31)
     else:
-        raise ValueError('Could not parse ROC era and quarter: {0}'.format(data))
+        raise ValueError(u'Could not parse ROC era and quarter: {0}'.format(data))

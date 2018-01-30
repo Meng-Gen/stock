@@ -55,7 +55,7 @@ class StockCodeSpider(scrapy.Spider):
         """
         code_and_name = data.split()
         if len(code_and_name) != 2:
-            raise ValueError('Could not parse code and name: {0}'.format(data))
+            raise ValueError(u'Could not parse code and name: {0}'.format(data))
         return code_and_name
 
     def _parse_listed_date(self, data):
