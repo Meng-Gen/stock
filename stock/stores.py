@@ -118,7 +118,9 @@ class DateFrameStore():
     """
 
     ACCEPTED_STATEMENT_TITLE_MAP = {
+        # consolidated balance sheet (yearly)
         u'\u500b\u80a1\u8cc7\u7522\u8ca0\u50b5\u5408\u4f75\u5e74\u8868': 'Yearly',
+        # consolidated balance sheet (quarterly)
         u'\u500b\u80a1\u8cc7\u7522\u8ca0\u50b5\u5408\u4f75\u8ca1\u5831\u5b63\u8868': 'Quarterly',
     }
 
@@ -166,7 +168,9 @@ class FinancialStatementStore():
     """
 
     ACCEPTED_STATEMENT_TITLE_LIST = [
+        # consolidated balance sheet (yearly)
         u'\u500b\u80a1\u8cc7\u7522\u8ca0\u50b5\u5408\u4f75\u5e74\u8868',
+        # consolidated balance sheet (quarterly)
         u'\u500b\u80a1\u8cc7\u7522\u8ca0\u50b5\u5408\u4f75\u8ca1\u5831\u5b63\u8868',
     ]
 
