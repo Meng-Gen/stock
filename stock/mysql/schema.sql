@@ -1,4 +1,14 @@
+-- CREATE USER 'stockcats'@'localhost' IDENTIFIED BY 'stockcats';
+-- GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP ON *.* TO 'stockcats'@'localhost';
+
+-- -----------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS FinancialStatementEntry;
+DROP TABLE IF EXISTS FinancialStatement;
+DROP TABLE IF EXISTS DateFrame;
 DROP TABLE IF EXISTS StockCode;
+
+-- -----------------------------------------------------------------------------
 
 CREATE TABLE StockCode (
     id INT NOT NULL AUTO_INCREMENT,
@@ -14,3 +24,47 @@ CREATE TABLE StockCode (
     updated_at DATETIME DEFAULT now() ON UPDATE now(),
     PRIMARY KEY (id)
 );
+
+
+CREATE TABLE DateFrame (
+    id INT NOT NULL,
+    name VARCHAR(16),
+    PRIMARY KEY (id),
+    UNIQUE (name)
+);
+
+
+CREATE TABLE FinancialStatement (
+    id INT NOT NULL AUTO_INCREMENT,
+    name VARCHAR(32),
+    date_frame_id INT,
+    is_snapshot BOOLEAN,
+    is_consolidated BOOLEAN,
+    PRIMARY KEY (id),
+    FOREIGN KEY (date_frame_id) REFERENCES DateFrame(id)
+);
+
+
+CREATE TABLE FinancialStatementEntry (
+    id INT NOT NULL AUTO_INCREMENT,
+    statement_id INT,
+    statement_date DATETIME,
+    stock_code VARCHAR(16),
+    metric_index INT,
+    metric_name VARCHAR(32),
+    metric_value DOUBLE,
+    PRIMARY KEY (id),
+    FOREIGN KEY (statement_id) REFERENCES FinancialStatement(id)
+);
+
+-- -----------------------------------------------------------------------------
+
+INSERT INTO DateFrame
+    (id, name)
+VALUES
+    (0, 'Yearly'),
+    (1, 'Quarterly'),
+    (2, 'Monthly'),
+    (3, 'Biweekly'),
+    (4, 'Weekly'),
+    (5, 'Daily');

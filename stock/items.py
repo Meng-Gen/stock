@@ -9,7 +9,8 @@ import scrapy
 
 
 class EndOfDocumentItem(scrapy.Item):
-	pass
+    pass
+
 
 class StockCodeItem(scrapy.Item):
     code = scrapy.Field()
@@ -20,3 +21,12 @@ class StockCodeItem(scrapy.Item):
     industry_type = scrapy.Field()
     cfi_code = scrapy.Field()
     crawled_at = scrapy.Field()
+
+
+class FinancialStatementEntryItem(scrapy.Item):
+    title = scrapy.Field()
+    statement_date = scrapy.Field()
+    stock_code = scrapy.Field()
+    metric_index = scrapy.Field()
+    metric_name = scrapy.Field()
+    metric_value = scrapy.Field()

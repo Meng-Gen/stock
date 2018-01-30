@@ -27,23 +27,20 @@ class StockCodeSpider(scrapy.Spider):
             entries = row.xpath('./td/text()').extract()
             if len(entries) != 6: 
                 continue
-            yield self._build_item(entries)
+            item = StockCodeItem()
+            item['code'], item['name'] = self._parse_code_and_name(entries[0])
+            item['isin_code'] = entries[1]
+            item['listed_date'] = self._parse_listed_date(entries[2])
+            item['market_type'] = entries[3]
+            item['industry_type'] = entries[4]
+            item['cfi_code'] = entries[5]
+            yield item
         yield EndOfDocumentItem()
-
-    def _build_item(self, entries):
-        item = StockCodeItem()
-        item['code'], item['name'] = self._parse_code_and_name(entries[0])
-        item['isin_code'] = entries[1]
-        item['listed_date'] = self._parse_listed_date(entries[2])
-        item['market_type'] = entries[3]
-        item['industry_type'] = entries[4]
-        item['cfi_code'] = entries[5]
-        return item
             
     def _parse_code_and_name(self, data):
-        """Parse the code and the name the specific stock code.
+        """Parse the code and the name of the specific stock code.
 
-        Parse the string representing the code and the name in the format, 
+        Parse the string representing the code and the name in the format,
         u'{code}  {name}'. For example: u'2330  \u53f0\u7a4d\u96fb'.
 
         Args:
@@ -58,7 +55,7 @@ class StockCodeSpider(scrapy.Spider):
         """
         code_and_name = data.split()
         if len(code_and_name) != 2:
-            raise ValueError('Could not parse code and name: {0}'.format(data))
+            raise ValueError(u'Could not parse code and name: {0}'.format(data))
         return code_and_name
 
     def _parse_listed_date(self, data):
