@@ -35,13 +35,14 @@ class StockCode(Base):
 class DateFrame(Base):
     __tablename__ = 'DateFrame'
     id = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String(8))
+    name = Column(String(8), unique=True)
 
 
 class FinancialStatement(Base):
     __tablename__ = 'FinancialStatement'
     id = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String(32))
+    name = Column(String(16))
+    title = Column(String(32), unique=True)
     date_frame_id = Column(Integer, ForeignKey("DateFrame.id"), nullable=False)
     is_snapshot = Column(Boolean)
     is_consolidated = Column(Boolean)
@@ -154,8 +155,8 @@ class DateFrameStore():
         Raises:
             ValueError: An error occurred parsing the date frame.
         """
-        if statement_title in ACCEPTED_STATEMENT_TITLE_MAP:
-            return self.cached_ids[ACCEPTED_STATEMENT_TITLE_MAP[statement_title]]
+        if statement_title in self.ACCEPTED_STATEMENT_TITLE_MAP:
+            return self.cached_ids[self.ACCEPTED_STATEMENT_TITLE_MAP[statement_title]]
         else:
             raise ValueError(u'Could not parse date frame: {0}'.format(statement_title))
 
@@ -173,6 +174,13 @@ class FinancialStatementStore():
         # consolidated balance sheet (quarterly)
         u'\u500b\u80a1\u8cc7\u7522\u8ca0\u50b5\u5408\u4f75\u8ca1\u5831\u5b63\u8868',
     ]
+
+    ACCEPTED_STATEMENT_TITLE_NAME_MAP = {
+        # consolidated balance sheet (yearly)
+        u'\u500b\u80a1\u8cc7\u7522\u8ca0\u50b5\u5408\u4f75\u5e74\u8868': 'BalanceSheet',
+        # consolidated balance sheet (quarterly)
+        u'\u500b\u80a1\u8cc7\u7522\u8ca0\u50b5\u5408\u4f75\u8ca1\u5831\u5b63\u8868': 'BalanceSheet',
+    }
 
     cached_ids = {}
 
@@ -198,10 +206,11 @@ class FinancialStatementStore():
             ValueError: An error occurred parsing the statement id.
         """
         if statement_title not in self.cached_ids:
-            if statement_title in ACCEPTED_STATEMENT_TITLE_LIST:
+            if statement_title in self.ACCEPTED_STATEMENT_TITLE_LIST:
                 session = Session()
                 session.add(FinancialStatement(
-                    name=statement_title,
+                    name=self.ACCEPTED_STATEMENT_TITLE_NAME_MAP[statement_title],
+                    title=statement_title,
                     date_frame_id=self.date_frame_store.get_id(statement_title),
                     is_snapshot=True,
                     is_consolidated=True
@@ -217,14 +226,14 @@ class FinancialStatementStore():
         """Init cached_ids map.
 
         Init cached_ids map by FinancialStatement table. Each record of
-        FinancialStatement has the id and the corresponding name, and we map
-        each name to the unique id as a cached record.
+        FinancialStatement has the id and the corresponding title, and we map
+        each title to the unique id as a cached record.
         """
         self.cached_ids.clear()
 
         session = Session()
         for entry in session.query(FinancialStatement):
-            self.cached_ids[entry.name] = entry.id
+            self.cached_ids[entry.title] = entry.id
         session.close()
 
 
