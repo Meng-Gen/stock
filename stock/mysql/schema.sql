@@ -36,12 +36,14 @@ CREATE TABLE DateFrame (
 
 CREATE TABLE FinancialStatement (
     id INT NOT NULL AUTO_INCREMENT,
-    name VARCHAR(32),
+    name VARCHAR(16),
+    title VARCHAR(32),
     date_frame_id INT,
     is_snapshot BOOLEAN,
     is_consolidated BOOLEAN,
     PRIMARY KEY (id),
-    FOREIGN KEY (date_frame_id) REFERENCES DateFrame(id)
+    FOREIGN KEY (date_frame_id) REFERENCES DateFrame(id),
+    UNIQUE (title)
 );
 
 
