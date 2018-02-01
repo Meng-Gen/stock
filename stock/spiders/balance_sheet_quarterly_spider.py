@@ -23,7 +23,6 @@ class BalanceSheetQuarterlySpider(scrapy.Spider):
 
     def parse(self, response):
         title, stock_code = self._parse_title_and_stock_code(response)
-        unit_of_metric_value = self._parse_unit_of_metric_value(response)
 
         XPATH_ROOT = '//*[@id="oMainTable"]/tr'
         rows = response.xpath(XPATH_ROOT)
@@ -46,8 +45,7 @@ class BalanceSheetQuarterlySpider(scrapy.Spider):
                 item['metric_index'] = i - 1
                 item['metric_name'] = name_and_values[0]
                 item['metric_value'] = \
-                    metric_value_utils.normalize(name_and_values[j]) * \
-                    unit_of_metric_value
+                    metric_value_utils.normalize(name_and_values[j])
                 yield item
         yield EndOfDocumentItem()
 
@@ -81,29 +79,3 @@ class BalanceSheetQuarterlySpider(scrapy.Spider):
             raise ValueError(u'Could not parse title: {0}'.format(title))
 
         return title_and_stock_code
-
-    def _parse_unit_of_metric_value(self, response):
-        """Parse the unit of the metric value.
-
-        Get the string of unit from the xpath of the scrapy response instance,
-        and parse the string representing the unit in the format, u'\u55ae\u4f4d:{unit}'.
-        For example: u'\u55ae\u4f4d:\u767e\u842c'.
-
-        Args:
-            response: A scrapy response instance.
-
-        Returns:
-            A string of the title of the financial statement. For example:
-            u'\u500b\u80a1\u8cc7\u7522\u8ca0\u50b5\u5408\u4f75\u5e74\u8868'.
-        """
-        XPATH_ROOT = '//*[@id="oScrollHead"]/td/div/text()'
-
-        units = response.xpath(XPATH_ROOT).extract()
-        if len(units) != 1:
-            raise ValueError(u'The length of units is not equal to 1: {0}'.format(units))
-
-        unit = units[0]
-        if unit == u'\u55ae\u4f4d:\u767e\u842c':
-            return 1000000
-        else:
-            raise ValueError(u'Could not parse unit: {0}'.format(unit))
