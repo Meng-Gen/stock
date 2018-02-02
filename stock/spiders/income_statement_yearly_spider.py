@@ -2,6 +2,7 @@ import scrapy
 
 from stock.items import EndOfDocumentItem
 from stock.items import FinancialStatementEntryItem
+from stock.stores import StockCodeStore
 from stock.utils import datetime_utils
 from stock.utils import metric_value_utils
 
@@ -15,10 +16,10 @@ class IncomeStatementYearlySpider(scrapy.Spider):
     }
 
     def start_requests(self):
-        urls = [
-            'http://jdata.yuanta.com.tw/z/zc/zcq/zcqa_2330.djhtm'
-        ]
-        for url in urls:
+        stock_codes = StockCodeStore().get()
+        for stock_code in stock_codes:
+            url = 'http://jdata.yuanta.com.tw/z/zc/zcq/zcqa_{stock_code}.djhtm' \
+                .format(stock_code=stock_code)
             yield scrapy.Request(url=url, callback=self.parse)
 
     def parse(self, response):

@@ -88,3 +88,31 @@ AUTOTHROTTLE_TARGET_CONCURRENCY = 1.0
 #HTTPCACHE_DIR = 'httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
+
+# Configure metadata of financial statement title
+STATEMENT_TITLE_METADATA = {
+    # consolidated balance sheet (yearly)
+    u'\u500b\u80a1\u8cc7\u7522\u8ca0\u50b5\u5408\u4f75\u5e74\u8868': {
+        'DateFrame': 'Yearly',
+        'Name': 'BalanceSheet',
+        'IsSnapshot': True,
+    },
+    # consolidated balance sheet (quarterly)
+    u'\u500b\u80a1\u8cc7\u7522\u8ca0\u50b5\u5408\u4f75\u8ca1\u5831\u5b63\u8868': {
+        'DateFrame': 'Quarterly',
+        'Name': 'BalanceSheet',
+        'IsSnapshot': True,
+    },
+    # consolidated income statement (yearly)
+    u'\u500b\u80a1\u640d\u76ca\u5408\u4f75\u5e74\u8868': {
+        'DateFrame': 'Yearly',
+        'Name': 'IncomeStatement',
+        'IsSnapshot': False,
+    },
+    # consolidated income statement (quarterly)
+    u'\u500b\u80a1\u640d\u76ca\u5408\u4f75\u8ca1\u5831\u5b63\u8868': {
+        'DateFrame': 'Quarterly',
+        'Name': 'IncomeStatement',
+        'IsSnapshot': False,
+    },
+}

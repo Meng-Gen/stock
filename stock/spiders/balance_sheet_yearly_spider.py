@@ -2,6 +2,7 @@ import scrapy
 
 from stock.items import EndOfDocumentItem
 from stock.items import FinancialStatementEntryItem
+from stock.stores import StockCodeStore
 from stock.utils import datetime_utils
 from stock.utils import metric_value_utils
 
