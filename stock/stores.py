@@ -123,6 +123,10 @@ class DateFrameStore():
         u'\u500b\u80a1\u8cc7\u7522\u8ca0\u50b5\u5408\u4f75\u5e74\u8868': 'Yearly',
         # consolidated balance sheet (quarterly)
         u'\u500b\u80a1\u8cc7\u7522\u8ca0\u50b5\u5408\u4f75\u8ca1\u5831\u5b63\u8868': 'Quarterly',
+        # consolidated income statement (yearly)
+        u'\u500b\u80a1\u640d\u76ca\u5408\u4f75\u5e74\u8868': 'Yearly',
+        # consolidated income statement (quarterly)
+        u'\u500b\u80a1\u640d\u76ca\u5408\u4f75\u8ca1\u5831\u5b63\u8868': 'Quarterly',
     }
 
     cached_ids = {}
@@ -168,18 +172,26 @@ class FinancialStatementStore():
     database.
     """
 
-    ACCEPTED_STATEMENT_TITLE_LIST = [
-        # consolidated balance sheet (yearly)
-        u'\u500b\u80a1\u8cc7\u7522\u8ca0\u50b5\u5408\u4f75\u5e74\u8868',
-        # consolidated balance sheet (quarterly)
-        u'\u500b\u80a1\u8cc7\u7522\u8ca0\u50b5\u5408\u4f75\u8ca1\u5831\u5b63\u8868',
-    ]
-
     ACCEPTED_STATEMENT_TITLE_NAME_MAP = {
         # consolidated balance sheet (yearly)
         u'\u500b\u80a1\u8cc7\u7522\u8ca0\u50b5\u5408\u4f75\u5e74\u8868': 'BalanceSheet',
         # consolidated balance sheet (quarterly)
         u'\u500b\u80a1\u8cc7\u7522\u8ca0\u50b5\u5408\u4f75\u8ca1\u5831\u5b63\u8868': 'BalanceSheet',
+        # consolidated income statement (yearly)
+        u'\u500b\u80a1\u640d\u76ca\u5408\u4f75\u5e74\u8868': 'IncomeStatement',
+        # consolidated income statement (quarterly)
+        u'\u500b\u80a1\u640d\u76ca\u5408\u4f75\u8ca1\u5831\u5b63\u8868': 'IncomeStatement',
+    }
+
+    ACCEPTED_STATEMENT_TITLE_SNAPSHOT_MAP = {
+        # consolidated balance sheet (yearly)
+        u'\u500b\u80a1\u8cc7\u7522\u8ca0\u50b5\u5408\u4f75\u5e74\u8868': True,
+        # consolidated balance sheet (quarterly)
+        u'\u500b\u80a1\u8cc7\u7522\u8ca0\u50b5\u5408\u4f75\u8ca1\u5831\u5b63\u8868': True,
+        # consolidated income statement (yearly)
+        u'\u500b\u80a1\u640d\u76ca\u5408\u4f75\u5e74\u8868': False,
+        # consolidated income statement (quarterly)
+        u'\u500b\u80a1\u640d\u76ca\u5408\u4f75\u8ca1\u5831\u5b63\u8868': False,
     }
 
     cached_ids = {}
@@ -206,13 +218,13 @@ class FinancialStatementStore():
             ValueError: An error occurred parsing the statement id.
         """
         if statement_title not in self.cached_ids:
-            if statement_title in self.ACCEPTED_STATEMENT_TITLE_LIST:
+            if statement_title in self.ACCEPTED_STATEMENT_TITLE_NAME_MAP:
                 session = Session()
                 session.add(FinancialStatement(
                     name=self.ACCEPTED_STATEMENT_TITLE_NAME_MAP[statement_title],
                     title=statement_title,
                     date_frame_id=self.date_frame_store.get_id(statement_title),
-                    is_snapshot=True,
+                    is_snapshot=self.ACCEPTED_STATEMENT_TITLE_SNAPSHOT_MAP[statement_title],
                     is_consolidated=True
                 ))
                 session.commit()

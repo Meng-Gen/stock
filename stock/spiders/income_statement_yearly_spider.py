@@ -6,8 +6,8 @@ from stock.utils import datetime_utils
 from stock.utils import metric_value_utils
 
 
-class BalanceSheetYearlySpider(scrapy.Spider):
-    name = "BalanceSheetYearly"
+class IncomeStatementYearlySpider(scrapy.Spider):
+    name = "IncomeStatementYearly"
     custom_settings = {
         'ITEM_PIPELINES': {
             'stock.pipelines.FinancialStatementEntryPipeline': 300
@@ -16,7 +16,7 @@ class BalanceSheetYearlySpider(scrapy.Spider):
 
     def start_requests(self):
         urls = [
-            'http://jdata.yuanta.com.tw/z/zc/zcp/zcpb/zcpb_2330.djhtm'
+            'http://jdata.yuanta.com.tw/z/zc/zcq/zcqa_2330.djhtm'
         ]
         for url in urls:
             yield scrapy.Request(url=url, callback=self.parse)
@@ -57,7 +57,7 @@ class BalanceSheetYearlySpider(scrapy.Spider):
 
         The size of the string list should be equal to one. Then parse the
         string representing the title in the format, u'{title}-{stock_code}'.
-        For example: u'\u500b\u80a1\u8cc7\u7522\u8ca0\u50b5\u5408\u4f75\u5e74\u8868-2330'.
+        For example: u'\u500b\u80a1\u640d\u76ca\u5408\u4f75\u5e74\u8868-2330'.
 
         Args:
             response: A scrapy response instance.
@@ -65,7 +65,7 @@ class BalanceSheetYearlySpider(scrapy.Spider):
         Returns:
             A string list of the title and the stock code of the financial
             statement. For example:
-            [u'\u500b\u80a1\u8cc7\u7522\u8ca0\u50b5\u5408\u4f75\u5e74\u8868', u'2330']
+            [u'\u500b\u80a1\u640d\u76ca\u5408\u4f75\u5e74\u8868', u'2330']
         """
         XPATH_ROOT = '/html/head/title/text()'
 
