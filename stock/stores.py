@@ -1,3 +1,5 @@
+from scrapy.utils.project import get_project_settings
+
 from sqlalchemy import Boolean
 from sqlalchemy import Column
 from sqlalchemy import DateTime
@@ -111,6 +113,14 @@ class StockCodeStore():
             cfi_code=item['cfi_code']
         )
 
+    def get(self):
+        stock_codes = []
+        session = Session()
+        for entry in session.query(StockCode).filter_by(cfi_code='ESVUFR').limit(5):
+            stock_codes.append(entry.code)
+        session.close()
+        return stock_codes
+
 
 class DateFrameStore():
     """A store to manipulate DateFrame table in MySQL database.
@@ -118,16 +128,7 @@ class DateFrameStore():
     Use SQLAlchemy ORM to manipulate DateFrame table in the stock database.
     """
 
-    ACCEPTED_STATEMENT_TITLE_MAP = {
-        # consolidated balance sheet (yearly)
-        u'\u500b\u80a1\u8cc7\u7522\u8ca0\u50b5\u5408\u4f75\u5e74\u8868': 'Yearly',
-        # consolidated balance sheet (quarterly)
-        u'\u500b\u80a1\u8cc7\u7522\u8ca0\u50b5\u5408\u4f75\u8ca1\u5831\u5b63\u8868': 'Quarterly',
-        # consolidated income statement (yearly)
-        u'\u500b\u80a1\u640d\u76ca\u5408\u4f75\u5e74\u8868': 'Yearly',
-        # consolidated income statement (quarterly)
-        u'\u500b\u80a1\u640d\u76ca\u5408\u4f75\u8ca1\u5831\u5b63\u8868': 'Quarterly',
-    }
+    metadata = get_project_settings().get('STATEMENT_TITLE_METADATA')
 
     cached_ids = {}
 
@@ -159,8 +160,8 @@ class DateFrameStore():
         Raises:
             ValueError: An error occurred parsing the date frame.
         """
-        if statement_title in self.ACCEPTED_STATEMENT_TITLE_MAP:
-            return self.cached_ids[self.ACCEPTED_STATEMENT_TITLE_MAP[statement_title]]
+        if statement_title in self.metadata:
+            return self.cached_ids[self.metadata[statement_title]['DateFrame']]
         else:
             raise ValueError(u'Could not parse date frame: {0}'.format(statement_title))
 
@@ -172,31 +173,10 @@ class FinancialStatementStore():
     database.
     """
 
-    ACCEPTED_STATEMENT_TITLE_NAME_MAP = {
-        # consolidated balance sheet (yearly)
-        u'\u500b\u80a1\u8cc7\u7522\u8ca0\u50b5\u5408\u4f75\u5e74\u8868': 'BalanceSheet',
-        # consolidated balance sheet (quarterly)
-        u'\u500b\u80a1\u8cc7\u7522\u8ca0\u50b5\u5408\u4f75\u8ca1\u5831\u5b63\u8868': 'BalanceSheet',
-        # consolidated income statement (yearly)
-        u'\u500b\u80a1\u640d\u76ca\u5408\u4f75\u5e74\u8868': 'IncomeStatement',
-        # consolidated income statement (quarterly)
-        u'\u500b\u80a1\u640d\u76ca\u5408\u4f75\u8ca1\u5831\u5b63\u8868': 'IncomeStatement',
-    }
-
-    ACCEPTED_STATEMENT_TITLE_SNAPSHOT_MAP = {
-        # consolidated balance sheet (yearly)
-        u'\u500b\u80a1\u8cc7\u7522\u8ca0\u50b5\u5408\u4f75\u5e74\u8868': True,
-        # consolidated balance sheet (quarterly)
-        u'\u500b\u80a1\u8cc7\u7522\u8ca0\u50b5\u5408\u4f75\u8ca1\u5831\u5b63\u8868': True,
-        # consolidated income statement (yearly)
-        u'\u500b\u80a1\u640d\u76ca\u5408\u4f75\u5e74\u8868': False,
-        # consolidated income statement (quarterly)
-        u'\u500b\u80a1\u640d\u76ca\u5408\u4f75\u8ca1\u5831\u5b63\u8868': False,
-    }
+    metadata = get_project_settings().get('STATEMENT_TITLE_METADATA')
+    date_frame_store = DateFrameStore()
 
     cached_ids = {}
-
-    date_frame_store = DateFrameStore()
 
     def __init__(self):
         self._init_cached_ids()
@@ -218,13 +198,13 @@ class FinancialStatementStore():
             ValueError: An error occurred parsing the statement id.
         """
         if statement_title not in self.cached_ids:
-            if statement_title in self.ACCEPTED_STATEMENT_TITLE_NAME_MAP:
+            if statement_title in self.metadata:
                 session = Session()
                 session.add(FinancialStatement(
-                    name=self.ACCEPTED_STATEMENT_TITLE_NAME_MAP[statement_title],
+                    name=self.metadata[statement_title]['Name'],
                     title=statement_title,
                     date_frame_id=self.date_frame_store.get_id(statement_title),
-                    is_snapshot=self.ACCEPTED_STATEMENT_TITLE_SNAPSHOT_MAP[statement_title],
+                    is_snapshot=self.metadata[statement_title]['IsSnapshot'],
                     is_consolidated=True
                 ))
                 session.commit()

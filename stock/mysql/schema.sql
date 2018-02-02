@@ -55,6 +55,9 @@ CREATE TABLE FinancialStatementEntry (
     metric_index INT,
     metric_name VARCHAR(32),
     metric_value DOUBLE,
+    crawled_at DATETIME DEFAULT now(),
+    created_at DATETIME DEFAULT now(),
+    updated_at DATETIME DEFAULT now() ON UPDATE now(),
     PRIMARY KEY (id),
     FOREIGN KEY (statement_id) REFERENCES FinancialStatement(id)
 );
