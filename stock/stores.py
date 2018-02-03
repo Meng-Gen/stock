@@ -116,7 +116,7 @@ class StockCodeStore():
     def get(self):
         stock_codes = []
         session = Session()
-        for entry in session.query(StockCode).filter_by(cfi_code='ESVUFR').limit(5):
+        for entry in session.query(StockCode).filter_by(cfi_code='ESVUFR').limit(1):
             stock_codes.append(entry.code)
         session.close()
         return stock_codes
