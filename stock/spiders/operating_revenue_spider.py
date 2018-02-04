@@ -28,13 +28,13 @@ class OperatingRevenueSpider(scrapy.Spider):
         XPATH_ROOT = '//*[@id="oMainTable"]/tr[not(@id="oScrollHead")]'
         rows = response.xpath(XPATH_ROOT)
 
-        # Parse the first row.  The first entry is the name of statement dates,
-        # and then the following entries are metric names.
+        # Parse the first row.  The first entry is the date frame, and then the
+        # following entries are metric names.
         date_frame_and_metric_names = rows[0].xpath('td/text()').extract()
 
-        # Parse the following rest rows. Each row is containing of metrics of
-        # different statement dates. The first entry is the name and then the
-        # following entries are values.
+        # Parse the following rest rows. Each row is containing of metric
+        # values on different month. The first entry is the statement date (a
+        # specific month) and then the following entries are metric values.
         for i in range(1, len(rows)):
             statement_date_and_metric_values = rows[i].xpath('td/text()').extract()
             for j in range(1, len(statement_date_and_metric_values)):
