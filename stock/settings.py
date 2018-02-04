@@ -115,4 +115,16 @@ STATEMENT_TITLE_METADATA = {
         'Name': 'IncomeStatement',
         'IsSnapshot': False,
     },
+    # consolidated cash flow statement (yearly)
+    u'\u500b\u80a1\u73fe\u91d1\u6d41\u91cf\u5e74\u8868\u5408\u4f75\u8ca1\u5831': {
+        'DateFrame': 'Yearly',
+        'Name': 'CashFlow',
+        'IsSnapshot': False,
+    },
+    # consolidated cash flow statement (quarterly)
+    u'\u500b\u80a1\u73fe\u91d1\u6d41\u91cf\u5b63\u8868\u5408\u4f75\u8ca1\u5831': {
+        'DateFrame': 'Quarterly',
+        'Name': 'CashFlow',
+        'IsSnapshot': False,
+    },
 }
