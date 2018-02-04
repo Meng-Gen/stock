@@ -127,4 +127,10 @@ STATEMENT_TITLE_METADATA = {
         'Name': 'CashFlow',
         'IsSnapshot': False,
     },
+    # consolidated operating revenue (monthly)
+    u'\u500b\u80a1\u5408\u4f75\u6708\u71df\u6536': {
+        'DateFrame': 'Monthly',
+        'Name': 'OperatingRevenue',
+        'IsSnapshot': False,
+    }
 }
