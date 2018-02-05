@@ -161,4 +161,18 @@ STATEMENT_TITLE_METADATA = {
         'IsSnapshot': False,
         'IsConsolidated': True,
     },
+    # consolidated financial analysis (yearly)
+    u'\u500b\u80a1\u8ca1\u52d9\u6bd4\u7387\u5408\u4f75\u5e74\u8868': {
+        'DateFrame': 'Yearly',
+        'Name': 'FinancialAnalysis',
+        'IsSnapshot': False,
+        'IsConsolidated': True,
+    },
+    # consolidated financial analysis (quarterly)
+    u'\u500b\u80a1\u8ca1\u52d9\u6bd4\u7387\u5408\u4f75\u8ca1\u5831\u5b63\u8868': {
+        'DateFrame': 'Quarterly',
+        'Name': 'FinancialAnalysis',
+        'IsSnapshot': False,
+        'IsConsolidated': True,
+    },
 }
