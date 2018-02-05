@@ -1,14 +1,17 @@
--- CREATE USER 'stockcats'@'localhost' IDENTIFIED BY 'stockcats';
--- GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP ON *.* TO 'stockcats'@'localhost';
+-- Create database
+CREATE DATABASE `stockcats`;
+USE `stockcats`;
+ALTER DATABASE `stockcats` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
--- -----------------------------------------------------------------------------
+-- Grant permission
+CREATE USER 'stockcats'@'localhost' IDENTIFIED BY 'stockcats';
+GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP ON *.* TO 'stockcats'@'localhost';
 
+-- Create all tables
 DROP TABLE IF EXISTS FinancialStatementEntry;
 DROP TABLE IF EXISTS FinancialStatement;
 DROP TABLE IF EXISTS DateFrame;
 DROP TABLE IF EXISTS StockCode;
-
--- -----------------------------------------------------------------------------
 
 CREATE TABLE StockCode (
     id INT NOT NULL AUTO_INCREMENT,
@@ -36,7 +39,7 @@ CREATE TABLE DateFrame (
 
 CREATE TABLE FinancialStatement (
     id INT NOT NULL AUTO_INCREMENT,
-    name VARCHAR(16),
+    name VARCHAR(32),
     title VARCHAR(32),
     date_frame_id INT,
     is_snapshot BOOLEAN,
@@ -62,8 +65,7 @@ CREATE TABLE FinancialStatementEntry (
     FOREIGN KEY (statement_id) REFERENCES FinancialStatement(id)
 );
 
--- -----------------------------------------------------------------------------
-
+-- Init DateFrame table
 INSERT INTO DateFrame
     (id, name)
 VALUES

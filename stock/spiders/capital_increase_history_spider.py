@@ -7,8 +7,8 @@ from stock.utils import datetime_utils
 from stock.utils import metric_value_utils
 
 
-class OperatingRevenueSpider(scrapy.Spider):
-    name = "OperatingRevenue"
+class CapitalIncreaseHistorySpider(scrapy.Spider):
+    name = "CapitalIncreaseHistory"
     custom_settings = {
         'ITEM_PIPELINES': {
             'stock.pipelines.FinancialStatementEntryPipeline': 300
@@ -18,30 +18,30 @@ class OperatingRevenueSpider(scrapy.Spider):
     def start_requests(self):
         stock_codes = StockCodeStore().get()
         for stock_code in stock_codes:
-            url = 'http://jdata.yuanta.com.tw/z/zc/zch/zch_{stock_code}.djhtm' \
+            url = 'http://jdata.yuanta.com.tw/z/zc/zcb/zcb_{stock_code}.djhtm' \
                 .format(stock_code=stock_code)
             yield scrapy.Request(url=url, callback=self.parse)
 
     def parse(self, response):
         title, stock_code = self._parse_title_and_stock_code(response)
 
-        XPATH_ROOT = '//*[@id="oMainTable"]/tr[not(@id="oScrollHead")]'
+        XPATH_ROOT = '//*[@id="SysJustIFRAMEDIV"]/table/tr/td/table/tr/td/table/tr'
         rows = response.xpath(XPATH_ROOT)
 
         # Parse the first row.  The first entry is the date frame, and then the
         # following entries are metric names.
-        date_frame_and_metric_names = rows[0].xpath('td/text()').extract()
+        date_frame_and_metric_names = rows[1].xpath('td/text()').extract()
 
         # Parse the following rest rows. Each row is containing of metric
         # values on different month. The first entry is the statement date (a
         # specific month) and then the following entries are metric values.
-        for i in range(1, len(rows)):
+        for i in range(2, len(rows) - 2):
             statement_date_and_metric_values = rows[i].xpath('td/text()').extract()
             for j in range(1, len(statement_date_and_metric_values)):
                 item = FinancialStatementEntryItem()
                 item['title'] = title
                 item['statement_date'] = datetime_utils. \
-                    build_datetime_from_roc_era_with_month(statement_date_and_metric_values[0])
+                    build_datetime_from_roc_era(statement_date_and_metric_values[0])
                 item['stock_code'] = stock_code
                 item['metric_index'] = j - 1
                 item['metric_name'] = date_frame_and_metric_names[j]
