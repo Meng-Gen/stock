@@ -146,5 +146,12 @@ STATEMENT_TITLE_METADATA = {
         'Name': 'CapitalIncreaseHistory',
         'IsSnapshot': True,
         'IsConsolidated': False,
+    },
+    # dividend policy (yearly)
+    u'\u500b\u80a1\u80a1\u5229\u653f\u7b56': {
+        'DateFrame': 'Yearly',
+        'Name': 'DividendPolicy',
+        'IsSnapshot': True,
+        'IsConsolidated': False,
     }
 }

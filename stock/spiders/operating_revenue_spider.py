@@ -28,7 +28,7 @@ class OperatingRevenueSpider(scrapy.Spider):
         XPATH_ROOT = '//*[@id="oMainTable"]/tr[not(@id="oScrollHead")]'
         rows = response.xpath(XPATH_ROOT)
 
-        # Parse the first row.  The first entry is the date frame, and then the
+        # Parse the first row. The first entry is the date frame, and then the
         # following entries are metric names.
         date_frame_and_metric_names = rows[0].xpath('td/text()').extract()
 

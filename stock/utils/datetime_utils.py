@@ -2,6 +2,10 @@ from calendar import monthrange
 from datetime import datetime
 
 
+def build_datetime_from_year(data):
+    year = int(data)
+    return datetime(year=year, month=12, day=31)
+
 def build_datetime_from_roc_era(data):
     year = int(data) + 1911
     return datetime(year=year, month=12, day=31)

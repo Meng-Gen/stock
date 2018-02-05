@@ -28,13 +28,15 @@ class CapitalIncreaseHistorySpider(scrapy.Spider):
         XPATH_ROOT = '//*[@id="SysJustIFRAMEDIV"]/table/tr/td/table/tr/td/table/tr'
         rows = response.xpath(XPATH_ROOT)
 
-        # Parse the first row.  The first entry is the date frame, and then the
-        # following entries are metric names.
+        # The first row is header and we skip it. Then parse the second row:
+        # The first entry is the date frame, and then the following entries are
+        # metric names.
         date_frame_and_metric_names = rows[1].xpath('td/text()').extract()
 
-        # Parse the following rest rows. Each row is containing of metric
-        # values on different month. The first entry is the statement date (a
-        # specific month) and then the following entries are metric values.
+        # Parse the following rest rows except the last two rows (ignore pie
+        # charts gracefully). Each row is containing of metric values on
+        # different year. The first entry is the statement date (a specific
+        # year) and then the following entries are metric values.
         for i in range(2, len(rows) - 2):
             statement_date_and_metric_values = rows[i].xpath('td/text()').extract()
             for j in range(1, len(statement_date_and_metric_values)):
