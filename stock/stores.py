@@ -43,7 +43,7 @@ class DateFrame(Base):
 class FinancialStatement(Base):
     __tablename__ = 'FinancialStatement'
     id = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String(16))
+    name = Column(String(32))
     title = Column(String(32), unique=True)
     date_frame_id = Column(Integer, ForeignKey("DateFrame.id"), nullable=False)
     is_snapshot = Column(Boolean)
@@ -205,7 +205,7 @@ class FinancialStatementStore():
                     title=statement_title,
                     date_frame_id=self.date_frame_store.get_id(statement_title),
                     is_snapshot=self.metadata[statement_title]['IsSnapshot'],
-                    is_consolidated=True
+                    is_consolidated=self.metadata[statement_title]['IsConsolidated']
                 ))
                 session.commit()
                 session.close()
