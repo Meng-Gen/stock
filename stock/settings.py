@@ -153,5 +153,12 @@ STATEMENT_TITLE_METADATA = {
         'Name': 'DividendPolicy',
         'IsSnapshot': True,
         'IsConsolidated': False,
-    }
+    },
+    # consolidated profitability (quarterly)
+    u'\u500b\u80a1\u7372\u5229\u80fd\u529b': {
+        'DateFrame': 'Quarterly',
+        'Name': 'Profitability',
+        'IsSnapshot': False,
+        'IsConsolidated': True,
+    },
 }
