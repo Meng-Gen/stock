@@ -30,3 +30,13 @@ class FinancialStatementEntryItem(scrapy.Item):
     metric_index = scrapy.Field()
     metric_name = scrapy.Field()
     metric_value = scrapy.Field()
+
+
+class StockPriceItem(scrapy.Item):
+    code = scrapy.Field()
+    date = scrapy.Field()
+    volume = scrapy.Field()
+    open = scrapy.Field()
+    high = scrapy.Field()
+    low = scrapy.Field()
+    close = scrapy.Field()
