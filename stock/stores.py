@@ -61,6 +61,21 @@ class FinancialStatementEntry(Base):
     metric_value = Column(Float(53))
 
 
+class StockPrice(Base):
+    __tablename__ = 'StockPrice'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    code = Column(String(16))
+    date = Column(DateTime())
+    volume = Column(Float(53))
+    open = Column(Float(53))
+    high = Column(Float(53))
+    low = Column(Float(53))
+    close = Column(Float(53))
+    crawled_at = Column(DateTime(), server_default=func.now())
+    created_at = Column(DateTime(), server_default=func.now())
+    updated_at = Column(DateTime(), onupdate=func.now())
+
+
 class StockCodeStore():
     """A store to manipulate StockCode table in the stock database.
 
@@ -282,4 +297,57 @@ class FinancialStatementEntryStore():
             metric_index=item['metric_index'],
             metric_name=item['metric_name'],
             metric_value=item['metric_value']
+        )
+
+
+class StockPriceStore():
+    """A store to manipulate StockPrice table in the stock database.
+
+    Use SQLAlchemy ORM to manipulate StockPrice table in the stock database.
+    """
+
+    cached_items = []
+
+    def add(self, item):
+        """Add a StockPriceItem into cached items.
+
+        Add a StockPriceItem into the list of cached items. Call flush() method
+        to persist all cached items.
+
+        Args:
+            item: A StockPriceItem
+        """
+        self.cached_items.append(item)
+
+    def flush(self):
+        """Flush all cached items into MySQL database.
+
+        Flush all cached items into MySQL database and clear all cached items.
+        """
+        session = Session()
+        for item in self.cached_items:
+            session.add(self._build_item(item))
+        session.commit()
+        session.close()
+        del self.cached_items[:]
+
+    def _build_item(self, item):
+        """Build a StockPrice from a StockPriceItem.
+
+        Build a StockPrice from a StockPriceItem to adapt SQLAlchemy ORM.
+
+        Args:
+            item: A StockPriceItem
+
+        Returns:
+            A StockPrice instance (SQLAlchemy ORM)
+        """
+        return StockPrice(
+            code=item['code'],
+            date=item['date'],
+            volume=item['volume'],
+            open=item['open'],
+            high=item['high'],
+            low=item['low'],
+            close=item['close']
         )

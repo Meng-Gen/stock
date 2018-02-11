@@ -3,11 +3,14 @@ CREATE DATABASE `stockcats`;
 USE `stockcats`;
 ALTER DATABASE `stockcats` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+
 -- Grant permission
 CREATE USER 'stockcats'@'localhost' IDENTIFIED BY 'stockcats';
 GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP ON *.* TO 'stockcats'@'localhost';
 
+
 -- Create all tables
+DROP TABLE IF EXISTS StockPrice;
 DROP TABLE IF EXISTS FinancialStatementEntry;
 DROP TABLE IF EXISTS FinancialStatement;
 DROP TABLE IF EXISTS DateFrame;
@@ -28,14 +31,12 @@ CREATE TABLE StockCode (
     PRIMARY KEY (id)
 );
 
-
 CREATE TABLE DateFrame (
     id INT NOT NULL,
     name VARCHAR(16),
     PRIMARY KEY (id),
     UNIQUE (name)
 );
-
 
 CREATE TABLE FinancialStatement (
     id INT NOT NULL AUTO_INCREMENT,
@@ -48,7 +49,6 @@ CREATE TABLE FinancialStatement (
     FOREIGN KEY (date_frame_id) REFERENCES DateFrame(id),
     UNIQUE (title)
 );
-
 
 CREATE TABLE FinancialStatementEntry (
     id INT NOT NULL AUTO_INCREMENT,
@@ -64,6 +64,22 @@ CREATE TABLE FinancialStatementEntry (
     PRIMARY KEY (id),
     FOREIGN KEY (statement_id) REFERENCES FinancialStatement(id)
 );
+
+CREATE TABLE StockPrice (
+    id INT NOT NULL AUTO_INCREMENT,
+    code VARCHAR(16),
+    date DATETIME,
+    volume DOUBLE,
+    open DOUBLE,
+    high DOUBLE,
+    low DOUBLE,
+    close DOUBLE,
+    crawled_at DATETIME DEFAULT now(),
+    created_at DATETIME DEFAULT now(),
+    updated_at DATETIME DEFAULT now() ON UPDATE now(),
+    PRIMARY KEY (id)
+);
+
 
 -- Init DateFrame table
 INSERT INTO DateFrame
