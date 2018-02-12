@@ -1,5 +1,5 @@
 from stores import DateFrame
 
 
-class DupontAnalyzer():
+class DupontYearlyAnalyzer():
 	pass

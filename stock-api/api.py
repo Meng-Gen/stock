@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_caching import Cache
 
-from analyzers import DupontAnalyzer
+from analyzers import DupontYearlyAnalyzer
 
 
 app = Flask(__name__)
