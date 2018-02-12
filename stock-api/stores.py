@@ -57,3 +57,35 @@ class StockPrice(Base):
     crawled_at = Column(DateTime(), server_default=func.now())
     created_at = Column(DateTime(), server_default=func.now())
     updated_at = Column(DateTime(), onupdate=func.now())
+
+
+class DateFrameStore():
+    """A store to manipulate DateFrame table in MySQL database.
+
+    Use SQLAlchemy ORM to manipulate DateFrame table in the stock database.
+    """
+
+    cached_ids = {}
+
+    def __init__(self):
+        """Init cached_ids map.
+
+        Init cached_ids map by DateFrame table. Each record of DateFrame has
+        the id and the corresponding name, and we map each name to the unique
+        id as a cached record.
+        """
+        session = Session()
+        for entry in session.query(DateFrame):
+            self.cached_ids[entry.name] = entry.id
+        session.close()
+
+    def get(self, name):
+        return self.cached_ids[name]
+
+
+class FinancialStatementEntryStore():
+    pass
+
+
+class StockPriceStore():
+    pass
