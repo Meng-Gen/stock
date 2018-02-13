@@ -2,7 +2,7 @@
 
 ### Installation
 
-  - Web crawling framework: [flask](https://scrapy.org/)
+  - Python microframework: [flask](http://flask.pocoo.org/)
   - Cache extension for Flask: [Flask-Caching](https://pythonhosted.org/Flask-Caching/)
 
 ### Run
