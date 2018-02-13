@@ -115,7 +115,8 @@ class DateFrameStore():
 
 
 class FinancialStatementEntryStore():
-    pass
+    def get(self, metric_name):
+        pass
 
 
 class StockPriceStore():
