@@ -30,13 +30,13 @@ class ProfitabilitySpider(scrapy.Spider):
 
         # Parse the first row. The first entry is the date frame, and then the
         # following entries are metric names.
-        date_frame_and_metric_names = rows[0].xpath('td/text()').extract()
+        date_frame_and_metric_names = rows[0].xpath('td//text()').extract()
 
         # Parse the following rest rows. Each row is containing of metric
         # values on different month. The first entry is the statement date (a
         # specific month) and then the following entries are metric values.
         for i in range(1, len(rows)):
-            statement_date_and_metric_values = rows[i].xpath('td/text()').extract()
+            statement_date_and_metric_values = rows[i].xpath('td//text()').extract()
             for j in range(1, len(statement_date_and_metric_values)):
                 item = FinancialStatementEntryItem()
                 item['title'] = title

@@ -32,13 +32,13 @@ class FinancialAnalysisYearlySpider(scrapy.Spider):
         # skip it. Then we begin to parse the third row. It is the content of
         # statement dates. The first entry is the name and then the following
         # entries are statement dates.
-        name_and_statement_dates = rows[2].xpath('td/text()').extract()
+        name_and_statement_dates = rows[2].xpath('td//text()').extract()
 
         # Parse the following rest rows. Each row is containing of metrics of
         # different statement dates. The first entry is the name and then the
         # following entries are values.
         for i in range(3, len(rows)):
-            name_and_values = rows[i].xpath('td[not(@class="t2")]/text()').extract()
+            name_and_values = rows[i].xpath('td[not(@class="t2")]//text()').extract()
             # Here we skip sub-header by for-loop implicitly.
             for j in range(1, len(name_and_values)):
                 item = FinancialStatementEntryItem()
