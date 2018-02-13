@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_caching import Cache
-from data_fetcher import DataFetcher
+
+from services.data_fetcher import DataFetcher
 
 
 app = Flask(__name__)

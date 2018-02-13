@@ -1,4 +1,3 @@
-from stores import DateFrame
 from stores import StockCodeStore
 
 
@@ -7,7 +6,3 @@ class StockCodeService():
 
     def get(self):
         return self.store.get()
-
-
-class DupontService():
-    pass
