@@ -129,10 +129,12 @@ class StockCodeStore():
         )
 
     def get(self):
-        stock_codes = []
         session = Session()
-        for entry in session.query(StockCode).filter_by(cfi_code='ESVUFR').limit(1):
-            stock_codes.append(entry.code)
+        results = session.query(StockCode.code).filter(StockCode.id.in_(
+            session.query(func.max(StockCode.id)).filter_by(cfi_code='ESVUFR').group_by(StockCode.code))
+        )
+        # TODO: Limit to 1 for demo
+        stock_codes = [entry.code for entry in results][:1]
         session.close()
         return stock_codes
 

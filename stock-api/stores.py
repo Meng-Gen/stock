@@ -17,6 +17,21 @@ engine = create_engine('mysql+mysqldb://stockcats:stockcats@localhost/stockcats?
 Session = sessionmaker(bind=engine)
 
 
+class StockCode(Base):
+    __tablename__ = 'StockCode'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    code = Column(String(16))
+    name = Column(String(32))
+    isin_code = Column(String(16))
+    listed_date = Column(DateTime())
+    market_type = Column(String(16))
+    industry_type = Column(String(32))
+    cfi_code = Column(String(16))
+    crawled_at = Column(DateTime(), server_default=func.now())
+    created_at = Column(DateTime(), server_default=func.now())
+    updated_at = Column(DateTime(), onupdate=func.now())
+
+
 class DateFrame(Base):
     __tablename__ = 'DateFrame'
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -57,6 +72,22 @@ class StockPrice(Base):
     crawled_at = Column(DateTime(), server_default=func.now())
     created_at = Column(DateTime(), server_default=func.now())
     updated_at = Column(DateTime(), onupdate=func.now())
+
+
+class StockCodeStore():
+    """A store to manipulate StockCode table in the stock database.
+
+    Use SQLAlchemy ORM to manipulate StockCode table in the stock database.
+    """
+
+    def get(self):
+        session = Session()
+        results = session.query(StockCode.code).filter(StockCode.id.in_(
+            session.query(func.max(StockCode.id)).filter_by(cfi_code='ESVUFR').group_by(StockCode.code))
+        )
+        stock_codes = [entry.code for entry in results]
+        session.close()
+        return stock_codes
 
 
 class DateFrameStore():
