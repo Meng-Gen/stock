@@ -1,4 +1,4 @@
-# Stock Setup 
+# Stock 
 
 ### Prerequisites
 

@@ -1,4 +1,4 @@
-# Stock Crawler Setup 
+# Stock Crawler 
 
 ### Installation
 

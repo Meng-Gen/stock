@@ -1,4 +1,4 @@
-# Stock API Setup 
+# Stock API 
 
 ### Installation
 
