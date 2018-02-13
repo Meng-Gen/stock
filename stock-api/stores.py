@@ -115,8 +115,32 @@ class DateFrameStore():
 
 
 class FinancialStatementEntryStore():
-    def get(self, metric_name):
+
+    def __init__(self):
+        """
+        TODO:
+        select FinancialStatement.id, FinancialStatement.is_snapshot, DateFrame.name
+        from FinancialStatement, DateFrame where FinancialStatement.date_frame_id = DateFrame.id;
+
+        set in cache
+        """
         pass
+
+    def get(self, metric_name):
+        """
+        TODO:
+        1.
+        select distinct(statement_id) from `FinancialStatementEntry` where metric_name = '{metric_name}';
+
+        2.
+        Iterate each statement_id:
+        select * from FinancialStatementEntry where `id` in
+        (
+            select max(`id`) from FinancialStatementEntry where metric_name = '{metric_name}'
+            and statement_id = 3 group by statement_date
+        );
+        """
+        print metric_name
 
 
 class StockPriceStore():

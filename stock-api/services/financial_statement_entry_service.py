@@ -5,7 +5,7 @@ class FinancialStatementEntryService():
     store = FinancialStatementEntryStore()
 
     def get_roe(self, stock):
-        store.get()
+        self.store.get(u'\u7d93\u5e38\u5229\u76ca')
         return "FinancialStatementEntryService - ROE"
         #return self.store.get()
 
