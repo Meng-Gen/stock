@@ -83,64 +83,100 @@ class StockCodeStore():
     def get(self):
         session = Session()
         results = session.query(StockCode.code).filter(StockCode.id.in_(
-            session.query(func.max(StockCode.id)).filter_by(cfi_code='ESVUFR').group_by(StockCode.code))
+            session.query(func.max(StockCode.id)) \
+                .filter_by(cfi_code='ESVUFR') \
+                .group_by(StockCode.code)
+            )
         )
         stock_codes = [entry.code for entry in results]
         session.close()
         return stock_codes
 
 
-class DateFrameStore():
-    """A store to manipulate DateFrame table in MySQL database.
+class FinancialStatementStore():
+    """A store to manipulate FinancialStatement table in the stock database.
 
-    Use SQLAlchemy ORM to manipulate DateFrame table in the stock database.
+    Use SQLAlchemy ORM to manipulate FinancialStatement table joining with
+    DateFrame table.
     """
 
-    cached_ids = {}
+    cached_date_frame_map = {}
+    cached_is_snapshot_map = {}
 
     def __init__(self):
-        """Init cached_ids map.
-
-        Init cached_ids map by DateFrame table. Each record of DateFrame has
-        the id and the corresponding name, and we map each name to the unique
-        id as a cached record.
-        """
         session = Session()
-        for entry in session.query(DateFrame):
-            self.cached_ids[entry.name] = entry.id
+        results = session.query(FinancialStatement.id, FinancialStatement.is_snapshot, DateFrame.name) \
+            .join(DateFrame).all()
+        self.cached_date_frame_map = dict([(entry.id, entry.name) for entry in results])
+        self.cached_is_snapshot_map = dict([(entry.id, entry.is_snapshot) for entry in results])
         session.close()
 
-    def get(self, name):
-        return self.cached_ids[name]
+    def get_date_frame(self, statement_id):
+        return self.cached_date_frame_map[statement_id]
+
+    def get_is_snapshot(self, statement_id):
+        return self.cached_is_snapshot_map[statement_id]
 
 
 class FinancialStatementEntryStore():
+    """A store to manipulate FinancialStatementEntry table.
 
-    def __init__(self):
-        """
-        TODO:
-        select FinancialStatement.id, FinancialStatement.is_snapshot, DateFrame.name
-        from FinancialStatement, DateFrame where FinancialStatement.date_frame_id = DateFrame.id;
+    Use SQLAlchemy ORM to manipulate FinancialStatementEntry table.
+    """
 
-        set in cache
-        """
-        pass
+    financial_statement_store = FinancialStatementStore()
 
     def get(self, metric_name):
-        """
-        TODO:
-        1.
-        select distinct(statement_id) from `FinancialStatementEntry` where metric_name = '{metric_name}';
+        """Get metric values by metric names.
 
-        2.
-        Iterate each statement_id:
-        select * from FinancialStatementEntry where `id` in
-        (
-            select max(`id`) from FinancialStatementEntry where metric_name = '{metric_name}'
-            and statement_id = 3 group by statement_date
-        );
+        Args:
+            metric_name: A string of metric names.
+
+        Returns:
+            A list of specific items.
+
+            A item is defined as a map containing four keys.
+            DateFrame:
+                A string value. There are 6 possible strings: 'Yearly',
+                'Quarterly', 'Monthly', 'Biweekly', 'Weekly' and 'Daily'.
+            IsSnapshot:
+                A boolean value.
+            StatementDates:
+                A list of datetime values. The length should be equal to the
+                length of MetricValues.
+            MetricValues:
+                A list of float values representing metric values.
         """
-        print metric_name
+        output = []
+        statement_ids = self._get_statement_ids_containing(metric_name)
+        for statement_id in statement_ids:
+            results = self._get_by_statement_id(metric_name, statement_id)
+            output.append({
+                'DateFrame': self.financial_statement_store.get_date_frame(statement_id),
+                'IsSnapshot': self.financial_statement_store.get_is_snapshot(statement_id),
+                'StatementDates': [entry.statement_date for entry in results],
+                'MetricValues': [entry.metric_value for entry in results],
+            })
+        return output
+
+    def _get_statement_ids_containing(self, metric_name):
+        session = Session()
+        results = session.query(FinancialStatementEntry.statement_id).distinct().filter_by(metric_name=metric_name)
+        statement_ids = [entry.statement_id for entry in results]
+        session.close()
+        return statement_ids
+
+    def _get_by_statement_id(self, metric_name, statement_id):
+        session = Session()
+        results = session.query(FinancialStatementEntry).filter(FinancialStatementEntry.id.in_(
+            session.query(func.max(FinancialStatementEntry.id)) \
+                .filter_by(metric_name=metric_name) \
+                .filter_by(statement_id=statement_id) \
+                .group_by(FinancialStatementEntry.statement_date)
+            )
+        )
+        session.close()
+        return results
 
 
 class StockPriceStore():
