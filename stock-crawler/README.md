@@ -4,6 +4,7 @@
 
   - Web crawling framework: [scrapy](https://scrapy.org/)
   - Database toolkit for python: [sqlalchemy](https://www.sqlalchemy.org/)
+  - MySQL DBAPI: mysql-python: ```pip install MySQL-python```
   - Powerful extensions to datetime: [dateutil](https://dateutil.readthedocs.io/)
 
 ### Setup

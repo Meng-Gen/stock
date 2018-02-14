@@ -53,4 +53,4 @@ def build_datetime_from_roc_era_with_month_and_day(data):
     return datetime(year=year, month=month, day=day)
 
 def month_range(start_date, end_date):
-    return list(rrule(freq=MONTHLY, dtstart=start_date.replace(day = 1), until=end_date))[::-1]
+    return list(rrule(freq=MONTHLY, dtstart=start_date.replace(day=1), until=end_date))[::-1]
