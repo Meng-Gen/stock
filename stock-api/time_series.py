@@ -1,9 +1,20 @@
+from calendar import monthrange
 from datetime import datetime
 from items import FinancialStatementEntryDataItem
 from items import FinancialStatementEntryItem
 
 import operator
 import pandas as pd
+
+
+class DatetimeUtils():
+    @staticmethod
+    def get_last_date_of_month_in_prev_year(timestamp):
+        date = timestamp.to_pydatetime()
+        year = date.year - 1
+        month = date.month
+        day = monthrange(year, month)[1]
+        return datetime(year, month, day)
 
 
 class TimeSeries(object):
@@ -20,7 +31,7 @@ class TimeSeries(object):
         }
         df = pd.DataFrame(data, columns = ['date', 'value'])
         df.set_index(['date'], drop=True, inplace=True)
-        df.sort_index()
+        df = df.sort_index()
         return df
 
     def __init__(self, date_frame, is_snapshot, df):
@@ -31,6 +42,14 @@ class TimeSeries(object):
     def __repr__(self):
         return 'date_frame: {date_frame}\nis_snapshot: {is_snapshot}\ndf: \n{df}' \
             .format(date_frame=self.date_frame, is_snapshot=self.is_snapshot, df=self.df)
+
+    def get(self):
+        return {
+            'date_frame': self.date_frame,
+            'is_snapshot': self.is_snapshot,
+            'date': [index.to_pydatetime() for index, row in self.df.iterrows()],
+            'value': [row['value'] for index, row in self.df.iterrows()],
+        }
 
     def copy(self):
         return TimeSeries(self.date_frame, self.is_snapshot, self.df.copy())
@@ -74,14 +93,34 @@ class TimeSeries(object):
             return self
 
     def yoy(self):
+        dates = []
+        values = []
         for index, row in self.df.iterrows():
-            print type(index), row
-            print index.replace(year=index.year - 1)
+            prev_index = DatetimeUtils.get_last_date_of_month_in_prev_year(index)
+            if prev_index not in self.df.index:
+                continue
+            dates.append(index.to_pydatetime())
+            value = float(row['value'])
+            prev_value = float(self.df.loc[prev_index, 'value'])
+            values.append((value - prev_value) / prev_value)
+        return TimeSeries.create(self.date_frame, self.is_snapshot, dates, values)
 
+    def annualize(self, other):
+        if self.date_frame != u'Yearly':
+            raise ValueError(u'Cannot be annualized: {0}'.format(self.date_frame))
+        if self.is_snapshot != other.is_snapshot:
+            raise ValueError(u'The is_snapshot values are not matched.')
 
-
-        #result = self.copy()
-        #print result.df
+        if other.date_frame == u'Quarterly':
+            this_year = self.df.index.max().year + 1
+            this_date = datetime(year=this_year, month=12, day=31)
+            this_value = other.df[str(this_year)].mean()[0] * 4.0
+            annualized_df = TimeSeries.create_df([this_date], [this_value])
+            result = pd.concat([self.df, annualized_df])
+            result.sort_index()
+            return TimeSeries(self.date_frame, self.is_snapshot, result)
+        else:
+            raise ValueError(u'Cannot annualize: {0}'.format(other.date_frame))
 
     def execute_binary_operation(self, operator, other):
         if self.date_frame != other.date_frame:
@@ -113,33 +152,3 @@ class TimeSeries(object):
 
     def __mul__(self, other):
         return self.execute_binary_operation(operator.mul, other)
-
-
-def main():
-    dates = [
-        datetime(2016, 12, 31, 0, 0), 
-        datetime(2016, 9, 30, 0, 0), 
-        datetime(2016, 6, 30, 0, 0), 
-        datetime(2016, 3, 31, 0, 0), 
-        datetime(2015, 12, 31, 0, 0), 
-        datetime(2015, 9, 30, 0, 0), 
-        datetime(2015, 6, 30, 0, 0), 
-        datetime(2015, 3, 31, 0, 0), 
-    ]
-    values = [10, 20, 30, 40, 50, 60, 70, 80]
-    ts1 = TimeSeries.create(
-        date_frame=u'Yearly',
-        is_snapshot=True,
-        dates=dates,
-        values=values
-    )
-
-    #print ts1
-    #print ts1.scalar(365.0)
-    #print ts1.shift()
-    #print ts1.moving_average(2)
-    #print ts1.periodize()
-    print ts1.yoy()
-
-if __name__ == '__main__':
-    main()
