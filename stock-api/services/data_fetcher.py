@@ -1,36 +1,38 @@
 from services.stock_code_service import StockCodeService
-from services.financial_statement_entry_service import FinancialStatementEntryService
+from services.dupont_service import DupontService
 
 import json
 
 
 class DataFetcher():
-    stock_code_service = StockCodeService()
-    entry_service = FinancialStatementEntryService()
-
     def get_all_stocks(self):
+        service = StockCodeService()
         data = {
-            "stocks": self.stock_code_service.get()
+            "stocks": service.get()
         }
         return json.dumps(data)
 
-    def analysis(self, stock):
+    def analyze(self, stock):
         data = {
             "stock": stock,
             "analysis": [
-                {
-                    "name": "DuPontAnalysis",
-                    "data": [
-                        {
-                            "name": "ROE",
-                            "data": self.entry_service.get_roe(stock),
-                        },
-                        {
-                            "name": "EquityMultiplier",
-                            "data": self.entry_service.get_equity_multiplier(stock),
-                        }
-                    ]
-                }
+                self._analyze_dupont(stock)
             ]
         }
         return json.dumps(data)
+
+    def _analyze_dupont(self, stock):
+        service = DupontService()
+        return {
+            "name": "DuPontAnalysis",
+            "data": [
+                {
+                    "name": "ROE",
+                    "data": service.get_roe(stock),
+                },
+                {
+                    "name": "EquityMultiplier",
+                    "data": service.get_equity_multiplier(stock),
+                }
+            ]
+        }

@@ -20,11 +20,11 @@ class DatetimeUtils():
 class TimeSeries(object):
     @staticmethod
     def create(date_frame, is_snapshot, dates, values):
-        df = TimeSeries.create_df(dates, values)
+        df = TimeSeries.__create_df(dates, values)
         return TimeSeries(date_frame, is_snapshot, df)
 
     @staticmethod
-    def create_df(dates, values):
+    def __create_df(dates, values):
         data = {
             'date': dates,
             'value': values,
@@ -57,6 +57,7 @@ class TimeSeries(object):
     def shift(self):
         result = self.copy()
         result.df['value'] = result.df['value'].shift(1)
+        result.df.fillna(method='bfill', inplace=True)
         return result
 
     def scalar(self, scale):
@@ -115,14 +116,14 @@ class TimeSeries(object):
             this_year = self.df.index.max().year + 1
             this_date = datetime(year=this_year, month=12, day=31)
             this_value = other.df[str(this_year)].mean()[0] * 4.0
-            annualized_df = TimeSeries.create_df([this_date], [this_value])
+            annualized_df = TimeSeries.__create_df([this_date], [this_value])
             result = pd.concat([self.df, annualized_df])
             result.sort_index()
             return TimeSeries(self.date_frame, self.is_snapshot, result)
         else:
             raise ValueError(u'Cannot annualize: {0}'.format(other.date_frame))
 
-    def execute_binary_operation(self, operator, other):
+    def __execute_binary_operation(self, operator, other):
         if self.date_frame != other.date_frame:
             raise ValueError(u'The date_frame values are not matched.')
         if self.is_snapshot != other.is_snapshot:
@@ -142,13 +143,13 @@ class TimeSeries(object):
         return TimeSeries(self.date_frame, self.is_snapshot, result)
 
     def __add__(self, other):
-        return self.execute_binary_operation(operator.add, other)
+        return self.__execute_binary_operation(operator.add, other)
 
     def __sub__(self, other):
-        return self.execute_binary_operation(operator.sub, other)
+        return self.__execute_binary_operation(operator.sub, other)
 
     def __div__(self, other):
-        return self.execute_binary_operation(operator.truediv, other)
+        return self.__execute_binary_operation(operator.truediv, other)
 
     def __mul__(self, other):
-        return self.execute_binary_operation(operator.mul, other)
+        return self.__execute_binary_operation(operator.mul, other)

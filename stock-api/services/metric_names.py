@@ -1,4 +1,9 @@
+from singleton import Singleton
+
+
 class MetricNames():
+    __metaclass__ = Singleton
+
     metric_names = {
         'CapitalIncreaseByCash': u'\u73fe\u91d1\u589e\u8cc7',
         'CapitalIncreaseByEarnings': u'\u76c8\u9918\u8f49\u589e\u8cc7',
