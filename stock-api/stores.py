@@ -10,6 +10,8 @@ from sqlalchemy import func
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
+from time_series import TimeSeries
+
 
 Base = declarative_base()
 
@@ -133,30 +135,24 @@ class FinancialStatementEntryStore():
             metric_name: A string of metric names.
 
         Returns:
-            A list of specific items.
-
-            A item is defined as a map containing four keys.
-            DateFrame:
-                A string value. There are 6 possible strings: 'Yearly',
-                'Quarterly', 'Monthly', 'Biweekly', 'Weekly' and 'Daily'.
-            IsSnapshot:
-                A boolean value.
-            StatementDates:
-                A list of datetime values. The length should be equal to the
-                length of MetricValues.
-            MetricValues:
-                A list of float values representing metric values.
+            A map of TimeSeries. Keys are date frames and values are
+            corresponding TimeSeries.
         """
-        output = []
+        output = {}
         statement_ids = self._get_statement_ids_containing(metric_name)
         for statement_id in statement_ids:
+            date_frame = self.financial_statement_store.get_date_frame(statement_id)
+            is_snapshot = self.financial_statement_store.get_is_snapshot(statement_id)
             results = self._get_by_statement_id(metric_name, statement_id)
-            output.append({
-                'DateFrame': self.financial_statement_store.get_date_frame(statement_id),
-                'IsSnapshot': self.financial_statement_store.get_is_snapshot(statement_id),
-                'StatementDates': [entry.statement_date for entry in results],
-                'MetricValues': [entry.metric_value for entry in results],
-            })
+            dates = [entry.statement_date for entry in results]
+            values = [entry.metric_value for entry in results]
+
+            output[date_frame] = TimeSeries.create(
+                date_frame=date_frame,
+                is_snapshot=is_snapshot,
+                dates=dates,
+                values=values
+            )
         return output
 
     def _get_statement_ids_containing(self, metric_name):

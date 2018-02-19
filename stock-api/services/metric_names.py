@@ -1,7 +1,9 @@
-from stores import FinancialStatementEntryStore
+from singleton import Singleton
 
 
 class MetricNames():
+    __metaclass__ = Singleton
+
     metric_names = {
         'CapitalIncreaseByCash': u'\u73fe\u91d1\u589e\u8cc7',
         'CapitalIncreaseByEarnings': u'\u76c8\u9918\u8f49\u589e\u8cc7',
@@ -41,15 +43,3 @@ class MetricNames():
 
     def get(self, good_metric_name):
         return self.metric_names[good_metric_name]
-
-class FinancialStatementEntryService():
-    store = FinancialStatementEntryStore()
-    metric_names = MetricNames()
-
-    def get_roe(self, stock):
-        output = self.store.get(self.metric_names.get('NetProfit'))
-        print output
-        return "FinancialStatementEntryService - ROE"
-
-    def get_equity_multiplier(self, stock):
-        return "FinancialStatementEntryService - Equity Multiplier"
