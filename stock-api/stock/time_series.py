@@ -1,7 +1,5 @@
 from calendar import monthrange
 from datetime import datetime
-from items import FinancialStatementEntryDataItem
-from items import FinancialStatementEntryItem
 
 import operator
 import pandas as pd

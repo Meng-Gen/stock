@@ -1,5 +1,5 @@
-from services.stock_code_service import StockCodeService
-from services.dupont_service import DupontService
+from stock_code_service import StockCodeService
+from dupont_service import DupontService
 
 import json
 
@@ -28,11 +28,11 @@ class DataFetcher():
             "data": [
                 {
                     "name": "ROE",
-                    "data": service.get_roe(stock),
+                    "data": service.roe(stock),
                 },
                 {
                     "name": "EquityMultiplier",
-                    "data": service.get_equity_multiplier(stock),
+                    "data": service.equity_multiplier(stock),
                 }
             ]
         }
