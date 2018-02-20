@@ -1,6 +1,6 @@
-from datetime import datetime
-
 from time_series import TimeSeries
+
+from datetime import datetime
 
 
 class MockMetricNames(object):
