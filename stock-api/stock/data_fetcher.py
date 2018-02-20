@@ -1,14 +1,14 @@
-from stock_code_service import StockCodeService
+from capital_increase_history_service import CapitalIncreaseHistoryService
 from dupont_service import DupontService
+from stock_code_service import StockCodeService
 
 import json
 
 
 class DataFetcher():
     def get_all_stocks(self):
-        service = StockCodeService()
         data = {
-            "stocks": service.get()
+            "stocks": StockCodeService().get()
         }
         return json.dumps(data)
 
@@ -16,10 +16,11 @@ class DataFetcher():
         data = {
             "stock": stock,
             "analysis": [
-                self._analyze_dupont(stock)
+                self._analyze_dupont(stock),
+                CapitalIncreaseHistoryService().get(stock),
             ]
         }
-        return json.dumps(data)
+        return json.dumps(data, default=str)
 
     def _analyze_dupont(self, stock):
         service = DupontService()
