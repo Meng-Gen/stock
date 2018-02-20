@@ -128,7 +128,7 @@ class FinancialStatementEntryStore():
 
     financial_statement_store = FinancialStatementStore()
 
-    def get(self, metric_name):
+    def get(self, stock_code, metric_name):
         """Get metric values by metric names.
 
         Args:
@@ -139,11 +139,11 @@ class FinancialStatementEntryStore():
             corresponding TimeSeries.
         """
         output = {}
-        statement_ids = self._get_statement_ids_containing(metric_name)
+        statement_ids = self._get_statement_ids_containing(stock_code, metric_name)
         for statement_id in statement_ids:
             date_frame = self.financial_statement_store.get_date_frame(statement_id)
             is_snapshot = self.financial_statement_store.get_is_snapshot(statement_id)
-            results = self._get_by_statement_id(metric_name, statement_id)
+            results = self._get_by_statement_id(stock_code, metric_name, statement_id)
             dates = [entry.statement_date for entry in results]
             values = [entry.metric_value for entry in results]
 
@@ -155,17 +155,19 @@ class FinancialStatementEntryStore():
             )
         return output
 
-    def _get_statement_ids_containing(self, metric_name):
+    def _get_statement_ids_containing(self, stock_code, metric_name):
         session = Session()
-        results = session.query(FinancialStatementEntry.statement_id).distinct().filter_by(metric_name=metric_name)
+        results = session.query(FinancialStatementEntry.statement_id).distinct() \
+            .filter_by(stock_code=stock_code).filter_by(metric_name=metric_name)
         statement_ids = [entry.statement_id for entry in results]
         session.close()
         return statement_ids
 
-    def _get_by_statement_id(self, metric_name, statement_id):
+    def _get_by_statement_id(self, stock_code, metric_name, statement_id):
         session = Session()
         results = session.query(FinancialStatementEntry).filter(FinancialStatementEntry.id.in_(
             session.query(func.max(FinancialStatementEntry.id)) \
+                .filter_by(stock_code=stock_code) \
                 .filter_by(metric_name=metric_name) \
                 .filter_by(statement_id=statement_id) \
                 .group_by(FinancialStatementEntry.statement_date)

@@ -10,12 +10,12 @@ class DupontService():
     store = FinancialStatementEntryStore()
     metric_names = MetricNames()
 
-    def roe(self, stock):
-        net_profit_list = self.store.get(self.metric_names.get('NetProfit'))
+    def roe(self, stock_code):
+        net_profit_list = self.store.get(stock_code, self.metric_names.get('NetProfit'))
         print net_profit_list
         # Yearly and Quarterly
 
         return "FinancialStatementEntryService - ROE"
 
-    def equity_multiplier(self, stock):
+    def equity_multiplier(self, stock_code):
         return "FinancialStatementEntryService - Equity Multiplier"
