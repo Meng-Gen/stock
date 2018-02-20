@@ -17,9 +17,9 @@ class DatetimeUtils():
 
 class TimeSeries(object):
     @staticmethod
-    def create(date_frame, is_snapshot, dates, values):
+    def create(name, date_frame, is_snapshot, dates, values):
         df = TimeSeries.__create_df(dates, values)
-        return TimeSeries(date_frame, is_snapshot, df)
+        return TimeSeries(name, date_frame, is_snapshot, df)
 
     @staticmethod
     def __create_df(dates, values):
@@ -32,17 +32,18 @@ class TimeSeries(object):
         df = df.sort_index()
         return df
 
-    def __init__(self, date_frame, is_snapshot, df):
+    def __init__(self, name, date_frame, is_snapshot, df):
+        self.name = name
         self.date_frame = date_frame
         self.is_snapshot = is_snapshot
         self.df = df.sort_index()
 
     def __repr__(self):
-        return 'date_frame: {date_frame}\nis_snapshot: {is_snapshot}\ndf: \n{df}' \
-            .format(date_frame=self.date_frame, is_snapshot=self.is_snapshot, df=self.df)
+        return self.get().__repr__()
 
     def get(self):
         return {
+            'name': self.name,
             'date_frame': self.date_frame,
             'is_snapshot': self.is_snapshot,
             'date': [index.to_pydatetime() for index, row in self.df.iterrows()],
@@ -50,7 +51,7 @@ class TimeSeries(object):
         }
 
     def copy(self):
-        return TimeSeries(self.date_frame, self.is_snapshot, self.df.copy())
+        return TimeSeries(self.name, self.date_frame, self.is_snapshot, self.df.copy())
 
     def shift(self):
         result = self.copy()
@@ -102,7 +103,7 @@ class TimeSeries(object):
             value = float(row['value'])
             prev_value = float(self.df.loc[prev_index, 'value'])
             values.append((value - prev_value) / prev_value)
-        return TimeSeries.create(self.date_frame, self.is_snapshot, dates, values)
+        return TimeSeries.create(self.name, self.date_frame, self.is_snapshot, dates, values)
 
     def annualize(self, other):
         if self.date_frame != u'Yearly':
@@ -117,7 +118,7 @@ class TimeSeries(object):
             annualized_df = TimeSeries.__create_df([this_date], [this_value])
             result = pd.concat([self.df, annualized_df])
             result.sort_index()
-            return TimeSeries(self.date_frame, self.is_snapshot, result)
+            return TimeSeries(self.name, self.date_frame, self.is_snapshot, result)
         else:
             raise ValueError(u'Cannot annualize: {0}'.format(other.date_frame))
 
@@ -138,7 +139,7 @@ class TimeSeries(object):
         del result['left_value']
         del result['right_value']
 
-        return TimeSeries(self.date_frame, self.is_snapshot, result)
+        return TimeSeries(self.name, self.date_frame, self.is_snapshot, result)
 
     def __add__(self, other):
         return self.__execute_binary_operation(operator.add, other)

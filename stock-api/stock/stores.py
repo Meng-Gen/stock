@@ -10,6 +10,7 @@ from sqlalchemy import func
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
+from metric_names import MetricNames
 from time_series import TimeSeries
 
 
@@ -127,9 +128,10 @@ class FinancialStatementEntryStore():
     """
 
     financial_statement_store = FinancialStatementStore()
+    metric_names = MetricNames()
 
-    def get(self, stock_code, metric_name):
-        """Get metric values by metric names.
+    def get(self, stock_code, good_metric_name):
+        """Get metric values by good metric names.
 
         Args:
             metric_name: A string of metric names.
@@ -139,6 +141,7 @@ class FinancialStatementEntryStore():
             corresponding TimeSeries.
         """
         output = {}
+        metric_name = self.metric_names.get(good_metric_name)
         statement_ids = self._get_statement_ids_containing(stock_code, metric_name)
         for statement_id in statement_ids:
             date_frame = self.financial_statement_store.get_date_frame(statement_id)
@@ -148,6 +151,7 @@ class FinancialStatementEntryStore():
             values = [entry.metric_value for entry in results]
 
             output[date_frame] = TimeSeries.create(
+                name=good_metric_name,
                 date_frame=date_frame,
                 is_snapshot=is_snapshot,
                 dates=dates,

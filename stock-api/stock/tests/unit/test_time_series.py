@@ -7,6 +7,7 @@ import unittest
 class TimeSeriesTest(unittest.TestCase):
     def test_create(self):
         ts = TimeSeries.create(
+            name=u'Test',
             date_frame=u'Quarterly',
             is_snapshot=False,
             dates=[datetime(2016, 6, 30), datetime(2016, 3, 31)],
@@ -14,6 +15,7 @@ class TimeSeriesTest(unittest.TestCase):
         )
 
         expected = {
+            'name': u'Test',
             'date_frame': u'Quarterly',
             'is_snapshot': False,
             'date': [datetime(2016, 3, 31), datetime(2016, 6, 30)],
@@ -23,6 +25,7 @@ class TimeSeriesTest(unittest.TestCase):
 
     def test_copy(self):
         original = TimeSeries.create(
+            name=u'Test',
             date_frame=u'Quarterly',
             is_snapshot=False,
             dates=[datetime(2016, 3, 31), datetime(2016, 6, 30)],
@@ -30,6 +33,7 @@ class TimeSeriesTest(unittest.TestCase):
         )
 
         original_expected = {
+            'name': u'Test',
             'date_frame': u'Quarterly',
             'is_snapshot': False,
             'date': [datetime(2016, 3, 31), datetime(2016, 6, 30)],
@@ -40,9 +44,11 @@ class TimeSeriesTest(unittest.TestCase):
         copied = original.copy()
 
         # Original time series won't be changed even we modify copied one.
+        copied.name = u'Copied'
         copied.date_frame = u'Yearly'
         copied.is_snapshot = True
         copied_expected = {
+            'name': u'Copied',
             'date_frame': u'Yearly',
             'is_snapshot': True,
             'date': [datetime(2016, 3, 31), datetime(2016, 6, 30)],
@@ -53,13 +59,9 @@ class TimeSeriesTest(unittest.TestCase):
         self.assertEqual(copied.get(), copied_expected)
 
     def test_shift(self):
-        ts = TimeSeries.create(
-            date_frame=u'Quarterly',
-            is_snapshot=False,
-            dates=[datetime(2016, 3, 31), datetime(2016, 6, 30), datetime(2016, 9, 30)],
-            values=[100.0, 200.0, 300.0]
-        )
+        ts = self._create_test_ts()
         expected = {
+            'name': u'Test',
             'date_frame': u'Quarterly',
             'is_snapshot': False,
             'date': [datetime(2016, 3, 31), datetime(2016, 6, 30), datetime(2016, 9, 30)],
@@ -68,13 +70,9 @@ class TimeSeriesTest(unittest.TestCase):
         self.assertEqual(ts.shift().get(), expected)
 
     def test_scalar(self):
-        ts = TimeSeries.create(
-            date_frame=u'Quarterly',
-            is_snapshot=False,
-            dates=[datetime(2016, 3, 31), datetime(2016, 6, 30), datetime(2016, 9, 30)],
-            values=[100.0, 200.0, 300.0]
-        )
+        ts = self._create_test_ts()
         expected = {
+            'name': u'Test',
             'date_frame': u'Quarterly',
             'is_snapshot': False,
             'date': [datetime(2016, 3, 31), datetime(2016, 6, 30), datetime(2016, 9, 30)],
@@ -83,13 +81,9 @@ class TimeSeriesTest(unittest.TestCase):
         self.assertEqual(ts.scalar(3).get(), expected)
 
     def test_inverse(self):
-        ts = TimeSeries.create(
-            date_frame=u'Quarterly',
-            is_snapshot=False,
-            dates=[datetime(2016, 3, 31), datetime(2016, 6, 30), datetime(2016, 9, 30)],
-            values=[100.0, 200.0, 300.0]
-        )
+        ts = self._create_test_ts()
         expected = {
+            'name': u'Test',
             'date_frame': u'Quarterly',
             'is_snapshot': False,
             'date': [datetime(2016, 3, 31), datetime(2016, 6, 30), datetime(2016, 9, 30)],
@@ -98,13 +92,9 @@ class TimeSeriesTest(unittest.TestCase):
         self.assertEqual(ts.inverse().get(), expected)
 
     def test_moving_average(self):
-        ts = TimeSeries.create(
-            date_frame=u'Quarterly',
-            is_snapshot=False,
-            dates=[datetime(2016, 3, 31), datetime(2016, 6, 30), datetime(2016, 9, 30)],
-            values=[100.0, 200.0, 300.0]
-        )
+        ts = self._create_test_ts()
         expected = {
+            'name': u'Test',
             'date_frame': u'Quarterly',
             'is_snapshot': False,
             'date': [datetime(2016, 3, 31), datetime(2016, 6, 30), datetime(2016, 9, 30)],
@@ -113,13 +103,9 @@ class TimeSeriesTest(unittest.TestCase):
         self.assertEqual(ts.moving_average(2).get(), expected)
 
     def test_accumulate(self):
-        ts = TimeSeries.create(
-            date_frame=u'Quarterly',
-            is_snapshot=False,
-            dates=[datetime(2016, 3, 31), datetime(2016, 6, 30), datetime(2016, 9, 30)],
-            values=[100.0, 200.0, 300.0]
-        )
+        ts = self._create_test_ts()
         expected = {
+            'name': u'Test',
             'date_frame': u'Quarterly',
             'is_snapshot': False,
             'date': [datetime(2016, 3, 31), datetime(2016, 6, 30), datetime(2016, 9, 30)],
@@ -129,6 +115,7 @@ class TimeSeriesTest(unittest.TestCase):
 
     def test_accumulate_annually(self):
         ts = TimeSeries.create(
+            name=u'Test',
             date_frame=u'Quarterly',
             is_snapshot=False,
             dates=[
@@ -141,6 +128,7 @@ class TimeSeriesTest(unittest.TestCase):
             ]
         )
         expected = {
+            'name': u'Test',
             'date_frame': u'Quarterly',
             'is_snapshot': False,
             'date': [
@@ -155,13 +143,10 @@ class TimeSeriesTest(unittest.TestCase):
         self.assertEqual(ts.accumulate_annually().get(), expected)
 
     def test_periodize_snapshot(self):
-        ts = TimeSeries.create(
-            date_frame=u'Quarterly',
-            is_snapshot=True,
-            dates=[datetime(2016, 3, 31), datetime(2016, 6, 30), datetime(2016, 9, 30)],
-            values=[100.0, 200.0, 300.0]
-        )
+        ts = self._create_test_ts()
+        ts.is_snapshot = True
         expected = {
+            'name': u'Test',
             'date_frame': u'Quarterly',
             'is_snapshot': False,
             'date': [datetime(2016, 3, 31), datetime(2016, 6, 30), datetime(2016, 9, 30)],
@@ -170,15 +155,10 @@ class TimeSeriesTest(unittest.TestCase):
         self.assertEqual(ts.periodize().get(), expected)
 
     def test_periodize_nonsnapshot(self):
-        ts = TimeSeries.create(
-            date_frame=u'Quarterly',
-            is_snapshot=False,
-            dates=[datetime(2016, 3, 31), datetime(2016, 6, 30), datetime(2016, 9, 30)],
-            values=[100.0, 200.0, 300.0]
-        )
-
+        ts = self._create_test_ts()
         # Leave unchanged if non-snapshot.
         expected = {
+            'name': u'Test',
             'date_frame': u'Quarterly',
             'is_snapshot': False,
             'date': [datetime(2016, 3, 31), datetime(2016, 6, 30), datetime(2016, 9, 30)],
@@ -188,6 +168,7 @@ class TimeSeriesTest(unittest.TestCase):
 
     def test_yoy(self):
         ts = TimeSeries.create(
+            name=u'Test',
             date_frame=u'Quarterly',
             is_snapshot=False,
             dates=[
@@ -200,6 +181,7 @@ class TimeSeriesTest(unittest.TestCase):
             ]
         )
         expected = {
+            'name': u'Test',
             'date_frame': u'Quarterly',
             'is_snapshot': False,
             'date': [
@@ -216,18 +198,21 @@ class TimeSeriesTest(unittest.TestCase):
 
     def test_annualize(self):
         one = TimeSeries.create(
+            name=u'Test',
             date_frame=u'Yearly',
             is_snapshot=False,
             dates=[datetime(2013, 12, 31), datetime(2014, 12, 31), datetime(2015, 12, 31)],
             values=[100.0, 200.0, 300.0]
         )
         other = TimeSeries.create(
+            name=u'Test',
             date_frame=u'Quarterly',
             is_snapshot=False,
             dates=[datetime(2016, 3, 31), datetime(2016, 6, 30), datetime(2016, 9, 30)],
             values=[400.0, 500.0, 600.0]
         )
         expected = {
+            'name': u'Test',
             'date_frame': u'Yearly',
             'is_snapshot': False,
             'date': [datetime(2013, 12, 31), datetime(2014, 12, 31), datetime(2015, 12, 31), datetime(2016, 12, 31)],
@@ -236,19 +221,10 @@ class TimeSeriesTest(unittest.TestCase):
         self.assertEqual(one.annualize(other).get(), expected)
 
     def test_add(self):
-        one = TimeSeries.create(
-            date_frame=u'Quarterly',
-            is_snapshot=False,
-            dates=[datetime(2016, 3, 31), datetime(2016, 6, 30), datetime(2016, 9, 30)],
-            values=[100.0, 200.0, 300.0]
-        )
-        other = TimeSeries.create(
-            date_frame=u'Quarterly',
-            is_snapshot=False,
-            dates=[datetime(2016, 3, 31), datetime(2016, 6, 30), datetime(2016, 9, 30)],
-            values=[400.0, 500.0, 600.0]
-        )
+        one = self._create_one_ts()
+        other = self._create_other_ts()
         expected = {
+            'name': u'One',
             'date_frame': u'Quarterly',
             'is_snapshot': False,
             'date': [datetime(2016, 3, 31), datetime(2016, 6, 30), datetime(2016, 9, 30)],
@@ -257,19 +233,10 @@ class TimeSeriesTest(unittest.TestCase):
         self.assertEqual((one + other).get(), expected)
 
     def test_sub(self):
-        one = TimeSeries.create(
-            date_frame=u'Quarterly',
-            is_snapshot=False,
-            dates=[datetime(2016, 3, 31), datetime(2016, 6, 30), datetime(2016, 9, 30)],
-            values=[100.0, 200.0, 300.0]
-        )
-        other = TimeSeries.create(
-            date_frame=u'Quarterly',
-            is_snapshot=False,
-            dates=[datetime(2016, 3, 31), datetime(2016, 6, 30), datetime(2016, 9, 30)],
-            values=[400.0, 500.0, 600.0]
-        )
+        one = self._create_one_ts()
+        other = self._create_other_ts()
         expected = {
+            'name': u'One',
             'date_frame': u'Quarterly',
             'is_snapshot': False,
             'date': [datetime(2016, 3, 31), datetime(2016, 6, 30), datetime(2016, 9, 30)],
@@ -278,19 +245,10 @@ class TimeSeriesTest(unittest.TestCase):
         self.assertEqual((one - other).get(), expected)
 
     def test_div(self):
-        one = TimeSeries.create(
-            date_frame=u'Quarterly',
-            is_snapshot=False,
-            dates=[datetime(2016, 3, 31), datetime(2016, 6, 30), datetime(2016, 9, 30)],
-            values=[100.0, 200.0, 300.0]
-        )
-        other = TimeSeries.create(
-            date_frame=u'Quarterly',
-            is_snapshot=False,
-            dates=[datetime(2016, 3, 31), datetime(2016, 6, 30), datetime(2016, 9, 30)],
-            values=[400.0, 500.0, 600.0]
-        )
+        one = self._create_one_ts()
+        other = self._create_other_ts()
         expected = {
+            'name': u'One',
             'date_frame': u'Quarterly',
             'is_snapshot': False,
             'date': [datetime(2016, 3, 31), datetime(2016, 6, 30), datetime(2016, 9, 30)],
@@ -299,22 +257,40 @@ class TimeSeriesTest(unittest.TestCase):
         self.assertEqual((one / other).get(), expected)
 
     def test_mul(self):
-        one = TimeSeries.create(
-            date_frame=u'Quarterly',
-            is_snapshot=False,
-            dates=[datetime(2016, 3, 31), datetime(2016, 6, 30), datetime(2016, 9, 30)],
-            values=[100.0, 200.0, 300.0]
-        )
-        other = TimeSeries.create(
-            date_frame=u'Quarterly',
-            is_snapshot=False,
-            dates=[datetime(2016, 3, 31), datetime(2016, 6, 30), datetime(2016, 9, 30)],
-            values=[400.0, 500.0, 600.0]
-        )
+        one = self._create_one_ts()
+        other = self._create_other_ts()
         expected = {
+            'name': u'One',
             'date_frame': u'Quarterly',
             'is_snapshot': False,
             'date': [datetime(2016, 3, 31), datetime(2016, 6, 30), datetime(2016, 9, 30)],
             'value': [100.0 * 400.0, 200.0 * 500.0, 300.0 * 600.0],
         }
         self.assertEqual((one * other).get(), expected)
+
+    def _create_test_ts(self):
+        return TimeSeries.create(
+            name=u'Test',
+            date_frame=u'Quarterly',
+            is_snapshot=False,
+            dates=[datetime(2016, 3, 31), datetime(2016, 6, 30), datetime(2016, 9, 30)],
+            values=[100.0, 200.0, 300.0]
+        )
+
+    def _create_one_ts(self):
+        return TimeSeries.create(
+            name=u'One',
+            date_frame=u'Quarterly',
+            is_snapshot=False,
+            dates=[datetime(2016, 3, 31), datetime(2016, 6, 30), datetime(2016, 9, 30)],
+            values=[100.0, 200.0, 300.0]
+        )
+
+    def _create_other_ts(self):
+        return TimeSeries.create(
+            name=u'Other',
+            date_frame=u'Quarterly',
+            is_snapshot=False,
+            dates=[datetime(2016, 3, 31), datetime(2016, 6, 30), datetime(2016, 9, 30)],
+            values=[400.0, 500.0, 600.0]
+        )
