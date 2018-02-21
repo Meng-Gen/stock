@@ -16,7 +16,8 @@ class DataFetcher():
         data = {
             'stock': stock,
             'analysis': {
-                'CapitalIncreaseHistory': CapitalIncreaseHistoryService().get(stock)
+                'DuPont': DupontService().get(stock),
+                'CapitalIncreaseHistory': CapitalIncreaseHistoryService().get(stock),
             }
         }
         return json.dumps(data, default=str)

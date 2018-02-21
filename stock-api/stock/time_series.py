@@ -114,7 +114,9 @@ class TimeSeries(object):
         if other.date_frame == u'Quarterly':
             this_year = self.df.index.max().year + 1
             this_date = datetime(year=this_year, month=12, day=31)
-            this_value = other.df[str(this_year)].mean()[0] * 4.0
+            this_value = other.df[str(this_year)].mean()[0]
+            if not self.is_snapshot:
+                this_value *= 4.0
             annualized_df = TimeSeries.__create_df([this_date], [this_value])
             result = pd.concat([self.df, annualized_df])
             result.sort_index()
@@ -139,7 +141,7 @@ class TimeSeries(object):
         del result['left_value']
         del result['right_value']
 
-        return TimeSeries(self.name, self.date_frame, self.is_snapshot, result)
+        return TimeSeries('', self.date_frame, self.is_snapshot, result)
 
     def __add__(self, other):
         return self.__execute_binary_operation(operator.add, other)

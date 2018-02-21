@@ -32,10 +32,8 @@ class BaseService():
         try:
             return {
                 'name': metric_name,
-                'data': {
-                    'date': metric.get()['date'],
-                    'value': metric.get()['value'],
-                }
+                'date': metric.get()['date'],
+                'value': metric.get()['value'],
             }
         except:
             return None

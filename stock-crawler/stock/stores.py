@@ -133,8 +133,9 @@ class StockCodeStore():
         results = session.query(StockCode.code).filter(StockCode.id.in_(
             session.query(func.max(StockCode.id)).filter_by(cfi_code='ESVUFR').group_by(StockCode.code))
         )
-        # TODO: Limit to 1 for demo
-        stock_codes = [entry.code for entry in results][:1]
+        stock_codes = [entry.code for entry in results]
+        # TODO: Always return 2317
+        stock_codes = ['2317']
         session.close()
         return stock_codes
 

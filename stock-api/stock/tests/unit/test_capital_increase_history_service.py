@@ -10,45 +10,39 @@ class CapitalIncreaseHistoryServiceTest(unittest.TestCase):
     def test_get(self):
         service = CapitalIncreaseHistoryService()
         service.store = MockFinancialStatementEntryStore()
+        actual = service.get('2317')
         expected = [
             {
                 'date_frame': u'Yearly',
                 'data': [
                     {
                         'name': 'CapitalIncreaseByCash',
-                        'data': {
-                            'date': [
-                                datetime(2005, 12, 31),
-                                datetime(2006, 12, 31),
-                                datetime(2007, 12, 31)
-                            ],
-                            'value': [26.44, 27.01, 27.01],
-                        }
+                        'date': [
+                            datetime(2005, 12, 31),
+                            datetime(2006, 12, 31),
+                            datetime(2007, 12, 31)
+                        ],
+                        'value': [26.44, 27.01, 27.01],
                     },
                     {
                         'name': 'CapitalIncreaseByEarnings',
-                        'data': {
-                            'date': [
-                                datetime(2005, 12, 31),
-                                datetime(2006, 12, 31),
-                                datetime(2007, 12, 31)
-                            ],
-                            'value': [346.52, 435.51, 547.78],
-                        }
+                        'date': [
+                            datetime(2005, 12, 31),
+                            datetime(2006, 12, 31),
+                            datetime(2007, 12, 31)
+                        ],
+                        'value': [346.52, 435.51, 547.78],
                     },
                     {
                         'name': 'CapitalIncreaseBySurplus',
-                        'data': {
-                            'date': [
-                                datetime(2005, 12, 31),
-                                datetime(2006, 12, 31),
-                                datetime(2007, 12, 31)
-                            ],
-                            'value': [36.01, 53.83, 53.83],
-                        }
+                        'date': [
+                            datetime(2005, 12, 31),
+                            datetime(2006, 12, 31),
+                            datetime(2007, 12, 31)
+                        ],
+                        'value': [36.01, 53.83, 53.83],
                     }
                 ]
             }
         ]
-
-        self.assertEqual(service.get('2317'), expected)
+        self.assertEqual(actual, expected)

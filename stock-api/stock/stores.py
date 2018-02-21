@@ -151,7 +151,7 @@ class FinancialStatementEntryStore():
             values = [entry.metric_value for entry in results]
 
             output[date_frame] = TimeSeries.create(
-                name=good_metric_name,
+                name=metric_name,
                 date_frame=date_frame,
                 is_snapshot=is_snapshot,
                 dates=dates,
