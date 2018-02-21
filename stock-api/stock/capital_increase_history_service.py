@@ -3,43 +3,20 @@ from base_service import BaseService
 
 class CapitalIncreaseHistoryService(BaseService):
     def get(self, stock_code):
-        metric_list = [
-            self.get_metric(stock_code, 'CapitalIncreaseByCash'),
-            self.get_metric(stock_code, 'CapitalIncreaseByEarnings'),
-            self.get_metric(stock_code, 'CapitalIncreaseBySurplus'),
-        ]
-        grouped = self.group_by(metric_list)
         return [
             {
-                'name': 'CapitalIncreaseHistoryService (Yearly)',
-                'data': self._get_yearly_data(grouped),
-            }
+                'date_frame': u'Yearly',
+                'data': self.filter_list(self.build_data(stock_code, u'Yearly')),
+            },
         ]
 
-    def _get_yearly_data(self, grouped):
-        if u'Yearly' in grouped:
-            return [
-                {
-                    'name': 'CapitalIncreaseByCash',
-                    'data': {
-                        'date': grouped[u'Yearly']['CapitalIncreaseByCash'].get()['date'],
-                        'value': grouped[u'Yearly']['CapitalIncreaseByCash'].get()['value'],
-                    }
-                },
-                {
-                    'name': 'CapitalIncreaseByEarnings',
-                    'data': {
-                        'date': grouped[u'Yearly']['CapitalIncreaseByEarnings'].get()['date'],
-                        'value': grouped[u'Yearly']['CapitalIncreaseByEarnings'].get()['value'],
-                    }
-                },
-                {
-                    'name': 'CapitalIncreaseBySurplus',
-                    'data': {
-                        'date': grouped[u'Yearly']['CapitalIncreaseBySurplus'].get()['date'],
-                        'value': grouped[u'Yearly']['CapitalIncreaseBySurplus'].get()['value'],
-                    }
-                },
-            ]
-        else:
-            return []
+    def build_data(self, stock_code, date_frame):
+        metric_names = [
+            'CapitalIncreaseByCash',
+            'CapitalIncreaseByEarnings',
+            'CapitalIncreaseBySurplus',
+        ]
+        return [
+            self.build_metric_data(self.get_metric(stock_code, date_frame, metric_name), metric_name) \
+                for metric_name in metric_names
+        ]

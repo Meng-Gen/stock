@@ -6,54 +6,39 @@ class BaseService():
     __metaclass__ = Singleton
 
     store = FinancialStatementEntryStore()
-    date_frames = [u'Yearly', u'Quarterly', u'Monthly', u'Biweekly', u'Weekly', u'Daily']
 
-    def get_metric(self, stock_code, metric_name):
-        return self.store.get(stock_code, metric_name)
+    def get_metric(self, stock_code, date_frame, metric_name):
+        metric = self.store.get(stock_code, metric_name)
 
-    def group_by(self, metric_list):
-        """Group metric list by date frame.
+        # Get yearly metric
+        if date_frame == u'Yearly':
+            if u'Yearly' in metric:
+                if u'Quarterly' in metric:
+                    return metric[u'Yearly'].annualize(metric[u'Quarterly']).periodize()
+                else:
+                    return metric[u'Yearly'].periodize()
+            else:
+                return None
+        # Get quarterly metric
+        elif date_frame == u'Quarterly':
+            if u'Quarterly' in metric:
+                return metric[u'Quarterly'].periodize()
+            else:
+                return None
+        else:
+            return None
 
-        Args:
-            metric_list: A list of metric map. A metric map is a map mapping
-            date_frame strings to TimeSeries objects. For example:
-            [
-                {
-                    u'Yearly': TimeSeries(),
-                    u'Quarterly': TimeSeries(),
-                },
-                {
-                    u'Yearly': TimeSeries(),
-                    u'Quarterly': TimeSeries(),
-                },
-                {
-                    u'Yearly': TimeSeries(),
-                    u'Quarterly': TimeSeries(),
-                },
-            ]
-
-        Returns:
-            A map which keys are date_frame strings and values are maps mapping
-            metric names to TimeSeries objects. For example:
-            {
-                u'Yearly': {
-                    u'Assets': TimeSeries(),
-                    u'Liabilities': TimeSeries(),
-                    u'Equity': TimeSeries(),
-                },
-                u'Quarterly':{
-                    u'Assets': TimeSeries(),
-                    u'Liabilities': TimeSeries(),
-                    u'Equity': TimeSeries(),
-                },
+    def build_metric_data(self, metric, metric_name):
+        try:
+            return {
+                'name': metric_name,
+                'data': {
+                    'date': metric.get()['date'],
+                    'value': metric.get()['value'],
+                }
             }
-        """
-        grouped = {}
-        for date_frame in self.date_frames:
-            for metric in metric_list:
-                if date_frame in metric:
-                    if date_frame not in grouped:
-                        grouped[date_frame] = {}
-                    time_series = metric[date_frame]
-                    grouped[date_frame][time_series.name] = time_series
-        return grouped
+        except:
+            return None
+
+    def filter_list(self, item_list):
+        return [entry for entry in item_list if entry is not None]

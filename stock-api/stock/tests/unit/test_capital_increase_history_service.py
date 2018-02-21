@@ -12,7 +12,7 @@ class CapitalIncreaseHistoryServiceTest(unittest.TestCase):
         service.store = MockFinancialStatementEntryStore()
         expected = [
             {
-                'name': 'CapitalIncreaseHistoryService (Yearly)',
+                'date_frame': u'Yearly',
                 'data': [
                     {
                         'name': 'CapitalIncreaseByCash',
@@ -50,4 +50,5 @@ class CapitalIncreaseHistoryServiceTest(unittest.TestCase):
                 ]
             }
         ]
-        self.assertEqual( service.get('2317'), expected)
+
+        self.assertEqual(service.get('2317'), expected)
