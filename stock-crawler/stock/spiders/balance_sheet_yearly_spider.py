@@ -16,10 +16,10 @@ class BalanceSheetYearlySpider(scrapy.Spider):
     }
 
     def start_requests(self):
-        urls = [
-            'http://jdata.yuanta.com.tw/z/zc/zcp/zcpb/zcpb_2330.djhtm'
-        ]
-        for url in urls:
+        stock_codes = StockCodeStore().get()
+        for stock_code in stock_codes:
+            url = 'http://jdata.yuanta.com.tw/z/zc/zcp/zcpb/zcpb_{stock_code}.djhtm' \
+                .format(stock_code=stock_code)
             yield scrapy.Request(url=url, callback=self.parse)
 
     def parse(self, response):

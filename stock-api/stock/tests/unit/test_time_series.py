@@ -1,5 +1,6 @@
-from datetime import datetime
 from time_series import TimeSeries
+
+from datetime import datetime
 
 import unittest
 
@@ -224,7 +225,7 @@ class TimeSeriesTest(unittest.TestCase):
         one = self._create_one_ts()
         other = self._create_other_ts()
         expected = {
-            'name': u'One',
+            'name': u'',
             'date_frame': u'Quarterly',
             'is_snapshot': False,
             'date': [datetime(2016, 3, 31), datetime(2016, 6, 30), datetime(2016, 9, 30)],
@@ -236,7 +237,7 @@ class TimeSeriesTest(unittest.TestCase):
         one = self._create_one_ts()
         other = self._create_other_ts()
         expected = {
-            'name': u'One',
+            'name': u'',
             'date_frame': u'Quarterly',
             'is_snapshot': False,
             'date': [datetime(2016, 3, 31), datetime(2016, 6, 30), datetime(2016, 9, 30)],
@@ -248,7 +249,7 @@ class TimeSeriesTest(unittest.TestCase):
         one = self._create_one_ts()
         other = self._create_other_ts()
         expected = {
-            'name': u'One',
+            'name': u'',
             'date_frame': u'Quarterly',
             'is_snapshot': False,
             'date': [datetime(2016, 3, 31), datetime(2016, 6, 30), datetime(2016, 9, 30)],
@@ -260,7 +261,7 @@ class TimeSeriesTest(unittest.TestCase):
         one = self._create_one_ts()
         other = self._create_other_ts()
         expected = {
-            'name': u'One',
+            'name': u'',
             'date_frame': u'Quarterly',
             'is_snapshot': False,
             'date': [datetime(2016, 3, 31), datetime(2016, 6, 30), datetime(2016, 9, 30)],

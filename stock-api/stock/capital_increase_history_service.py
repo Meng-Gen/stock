@@ -3,14 +3,20 @@ from base_service import BaseService
 
 class CapitalIncreaseHistoryService(BaseService):
     def get(self, stock_code):
-        metric_list = [
-            self.get_metric(stock_code, 'CapitalIncreaseByCash'),
-            self.get_metric(stock_code, 'CapitalIncreaseByEarnings'),
-            self.get_metric(stock_code, 'CapitalIncreaseBySurplus'),
+        return [
+            {
+                'date_frame': u'Yearly',
+                'data': self.filter_list(self.build_data(stock_code, u'Yearly')),
+            },
         ]
 
-        grouped = self.group_by(metric_list)
-        if u'Yearly' not in grouped:
-            raise ValueError(u'Capital increase history should be yearly')
-
-        print grouped[u'Yearly']
+    def build_data(self, stock_code, date_frame):
+        metric_names = [
+            'CapitalIncreaseByCash',
+            'CapitalIncreaseByEarnings',
+            'CapitalIncreaseBySurplus',
+        ]
+        return [
+            self.build_metric_data(self.get_metric(stock_code, date_frame, metric_name), metric_name) \
+                for metric_name in metric_names
+        ]
