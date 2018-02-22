@@ -1,4 +1,5 @@
 from capital_increase_history_service import CapitalIncreaseHistoryService
+from capital_structure_service import CapitalStructureService
 from dupont_service import DupontService
 from stock_code_service import StockCodeService
 
@@ -17,6 +18,7 @@ class DataFetcher():
             'stock': stock,
             'analysis': {
                 'DuPont': DupontService().get(stock),
+                'CapitalStructure': CapitalStructureService().get(stock),
                 'CapitalIncreaseHistory': CapitalIncreaseHistoryService().get(stock),
             }
         }

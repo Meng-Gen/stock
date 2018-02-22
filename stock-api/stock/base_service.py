@@ -40,3 +40,10 @@ class BaseService():
 
     def filter_list(self, item_list):
         return [entry for entry in item_list if entry is not None]
+
+    def get_ratio(self, left_operand, right_operand, quarterly_scalar=1.0):
+        result = left_operand / right_operand
+        if result.date_frame == u'Quarterly':
+            return result.scalar(quarterly_scalar)
+        else:
+            return result
