@@ -28,10 +28,10 @@ class BaseService():
         else:
             return None
 
-    def build_metric_data(self, metric, metric_name):
+    def build_metric_data(self, metric, metric_name=None):
         try:
             return {
-                'name': metric_name,
+                'name': metric_name if metric_name is not None else metric.get()['name'],
                 'date': metric.get()['date'],
                 'value': metric.get()['value'],
             }

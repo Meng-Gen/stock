@@ -11,12 +11,12 @@ class CapitalIncreaseHistoryService(BaseService):
         ]
 
     def build_data(self, stock_code, date_frame):
-        metric_names = [
-            'CapitalIncreaseByCash',
-            'CapitalIncreaseByEarnings',
-            'CapitalIncreaseBySurplus',
-        ]
+        capital_increase_by_cash = self.get_metric(stock_code, date_frame, 'CapitalIncreaseByCash')
+        capital_increase_by_earnings = self.get_metric(stock_code, date_frame, 'CapitalIncreaseByEarnings')
+        capital_increase_by_surplus = self.get_metric(stock_code, date_frame, 'CapitalIncreaseBySurplus')
+
         return [
-            self.build_metric_data(self.get_metric(stock_code, date_frame, metric_name), metric_name) \
-                for metric_name in metric_names
+            self.build_metric_data(capital_increase_by_cash),
+            self.build_metric_data(capital_increase_by_earnings),
+            self.build_metric_data(capital_increase_by_surplus),
         ]
