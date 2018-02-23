@@ -27,6 +27,7 @@ class MetricNames():
         'LongTermLiabilities': u'\u9577\u671f\u8ca0\u50b5',
         'FixedAssets': u'\u56fa\u5b9a\u8cc7\u7522',
         'IncomeBeforeTax': u'\u7a05\u524d\u6de8\u5229',
+        'NetProfitBeforeTax': u'\u7a05\u524d\u6de8\u5229', # same as IncomeBeforeTax
         'InterestExpense': u'\u5229\u606f\u652f\u51fa',
         'SellingExpenses': u'\u71df\u696d\u8cbb\u7528\u2500\u63a8\u92b7\u8cbb\u7528',
         'AdministrativeExpenses': u'\u71df\u696d\u8cbb\u7528\u2500\u7ba1\u7406\u8cbb\u7528',

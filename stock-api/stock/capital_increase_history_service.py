@@ -6,7 +6,7 @@ class CapitalIncreaseHistoryService(BaseService):
         return [
             {
                 'date_frame': u'Yearly',
-                'data': self.filter_list(self.build_data(stock_code, u'Yearly')),
+                'data': self.filter_list(self.build_data_safely(stock_code, u'Yearly')),
             },
         ]
 

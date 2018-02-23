@@ -6,11 +6,11 @@ class CapitalStructureService(BaseService):
         return [
             {
                 'date_frame': u'Yearly',
-                'data': self.filter_list(self.build_data(stock_code, u'Yearly')),
+                'data': self.filter_list(self.build_data_safely(stock_code, u'Yearly')),
             },
             {
                 'date_frame': u'Quarterly',
-                'data': self.filter_list(self.build_data(stock_code, u'Quarterly')),
+                'data': self.filter_list(self.build_data_safely(stock_code, u'Quarterly')),
             },
         ]
 
