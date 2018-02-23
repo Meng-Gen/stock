@@ -124,6 +124,14 @@ class TimeSeries(object):
         else:
             raise ValueError(u'Cannot annualize: {0}'.format(other.date_frame))
 
+    def max(self, target_date_frame):
+        result = self.copy()
+        return result
+
+    def min(self, target_date_frame):
+        result = self.copy()
+        return result
+
     def __execute_binary_operation(self, operator, other):
         if self.date_frame != other.date_frame:
             raise ValueError(u'The date_frame values are not matched.')
