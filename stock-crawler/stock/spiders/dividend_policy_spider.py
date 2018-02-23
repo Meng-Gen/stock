@@ -46,7 +46,7 @@ class DividendPolicySpider(scrapy.Spider):
                     build_datetime_from_year(entries[num_entry_per_row * i])
                 item['stock_code'] = stock_code
                 item['metric_index'] = j - 1
-                item['metric_name'] = metric_names[j - 1]
+                item['metric_name'] = metric_names[j - 1].strip()
                 item['metric_value'] = \
                     metric_value_utils.normalize(entries[num_entry_per_row * i + j])
                 yield item

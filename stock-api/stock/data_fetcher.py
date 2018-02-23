@@ -33,7 +33,7 @@ class DataFetcher():
                 'Liquidity': LiquidityService().get(stock),
                 'OperatingRevenue': OperatingRevenueService().get(stock),
                 'Profitability': ProfitabilityService().get(stock),
-                'RevenueIndexService': RevenueIndexService().get(stock),
+                'RevenueIndex': RevenueIndexService().get(stock),
             }
         }
         return json.dumps(data, default=str)

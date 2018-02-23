@@ -125,10 +125,12 @@ class TimeSeries(object):
             raise ValueError(u'Cannot annualize: {0}'.format(other.date_frame))
 
     def max(self, target_date_frame):
+        # TODO: Implement it
         result = self.copy()
         return result
 
     def min(self, target_date_frame):
+        # TODO: Implement it
         result = self.copy()
         return result
 

@@ -18,6 +18,8 @@ class ExpectedRateOfReturnService(BaseService):
         net_profit = self.get_metric(stock_code, date_frame, 'NetProfit')
         equity = self.get_metric(stock_code, date_frame, 'Equity')
         stock_price = self.get_metric(stock_code, date_frame, 'StockPrice')
+        # TODO: Implement stock_price
+        stock_price = self.get_metric(stock_code, date_frame, 'Equity')
         book_value = self.get_metric(stock_code, date_frame, 'BookValue')
 
         # ROE = (NetProfit / Sales) * (Sales / Assets) * (Assets / Equity)

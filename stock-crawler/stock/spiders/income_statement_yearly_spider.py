@@ -44,7 +44,7 @@ class IncomeStatementYearlySpider(scrapy.Spider):
                     build_datetime_from_roc_era(name_and_statement_dates[j])
                 item['stock_code'] = stock_code
                 item['metric_index'] = i - 1
-                item['metric_name'] = name_and_values[0]
+                item['metric_name'] = name_and_values[0].strip()
                 item['metric_value'] = \
                     metric_value_utils.normalize(name_and_values[j])
                 yield item

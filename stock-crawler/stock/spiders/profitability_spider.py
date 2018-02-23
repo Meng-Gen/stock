@@ -44,7 +44,7 @@ class ProfitabilitySpider(scrapy.Spider):
                     build_datetime_from_roc_era_with_quarter(statement_date_and_metric_values[0])
                 item['stock_code'] = stock_code
                 item['metric_index'] = j - 1
-                item['metric_name'] = date_frame_and_metric_names[j]
+                item['metric_name'] = date_frame_and_metric_names[j].strip()
                 item['metric_value'] = \
                     metric_value_utils.normalize(statement_date_and_metric_values[j])
                 yield item
