@@ -179,7 +179,3 @@ class FinancialStatementEntryStore():
         )
         session.close()
         return results
-
-
-class StockPriceStore():
-    pass

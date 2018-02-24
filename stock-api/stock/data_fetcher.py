@@ -14,26 +14,35 @@ import json
 
 
 class DataFetcher():
+    services = {
+        'capital_structure': CapitalStructureService(),
+        'capital_increase_history': CapitalIncreaseHistoryService(),
+        'cash_flow': CashFlowService(),
+        'dupont': DupontService(),
+        'dividend_policy': DividendPolicyService(),
+        'expected_rate_of_return': ExpectedRateOfReturnService(),
+        'liquidity': LiquidityService(),
+        'operating_revenue': OperatingRevenueService(),
+        'profitability': ProfitabilityService(),
+        'revenue_index': RevenueIndexService(),
+    }
+
     def get_all_stocks(self):
         data = {
             'stocks': StockCodeService().get()
         }
         return json.dumps(data)
 
-    def analyze(self, stock):
+    def analyze(self, analysis, stock):
         data = {
             'stock': stock,
-            'analysis': {
-                'CapitalStructure': CapitalStructureService().get(stock),
-                'CapitalIncreaseHistory': CapitalIncreaseHistoryService().get(stock),
-                'CashFlow': CashFlowService().get(stock),
-                'DuPont': DupontService().get(stock),
-                'DividendPolicy': DividendPolicyService().get(stock),
-                'ExpectedRateOfReturn': ExpectedRateOfReturnService().get(stock),
-                'Liquidity': LiquidityService().get(stock),
-                'OperatingRevenue': OperatingRevenueService().get(stock),
-                'Profitability': ProfitabilityService().get(stock),
-                'RevenueIndex': RevenueIndexService().get(stock),
-            }
+            'name': analysis,
+            'analysis': self._get_analysis_data(analysis, stock),
         }
         return json.dumps(data, default=str)
+
+    def _get_analysis_data(self, analysis, stock):
+        if analysis in self.services:
+            return self.services[analysis].get(stock)
+        else:
+            return None

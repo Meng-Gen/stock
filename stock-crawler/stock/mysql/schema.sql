@@ -10,7 +10,6 @@ GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP ON *.* TO 'stockcats'@'localh
 
 
 -- Create all tables
-DROP TABLE IF EXISTS StockPrice;
 DROP TABLE IF EXISTS FinancialStatementEntry;
 DROP TABLE IF EXISTS FinancialStatement;
 DROP TABLE IF EXISTS DateFrame;
@@ -64,22 +63,6 @@ CREATE TABLE FinancialStatementEntry (
     PRIMARY KEY (id),
     FOREIGN KEY (statement_id) REFERENCES FinancialStatement(id)
 );
-
-CREATE TABLE StockPrice (
-    id INT NOT NULL AUTO_INCREMENT,
-    code VARCHAR(16),
-    date DATETIME,
-    volume DOUBLE,
-    open DOUBLE,
-    high DOUBLE,
-    low DOUBLE,
-    close DOUBLE,
-    crawled_at DATETIME DEFAULT now(),
-    created_at DATETIME DEFAULT now(),
-    updated_at DATETIME DEFAULT now() ON UPDATE now(),
-    PRIMARY KEY (id)
-);
-
 
 -- Init DateFrame table
 INSERT INTO DateFrame

@@ -14,7 +14,7 @@ def get_all_stocks():
     return data_fetcher.get_all_stocks()
 
 
-@app.route("/v1/stock/analysis/<stock>")
+@app.route("/v1/stock/analysis/<analysis>/<stock>")
 @cache.cached(timeout=60)
-def analyze(stock):
-    return data_fetcher.analyze(stock)
+def analyze(analysis, stock):
+    return data_fetcher.analyze(analysis, stock)

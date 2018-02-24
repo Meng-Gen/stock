@@ -8,10 +8,8 @@
 from stock.items import EndOfDocumentItem
 from stock.items import FinancialStatementEntryItem
 from stock.items import StockCodeItem
-from stock.items import StockPriceItem
 from stock.stores import FinancialStatementEntryStore
 from stock.stores import StockCodeStore
-from stock.stores import StockPriceStore
 
 
 class StockCodePipeline(object):
@@ -51,27 +49,6 @@ class FinancialStatementEntryPipeline(object):
             spider: A spider
         """
         if isinstance(item, FinancialStatementEntryItem):
-            self.store.add(item)
-        elif isinstance(item, EndOfDocumentItem):
-            self.store.flush()
-        return item
-
-
-class StockPricePipeline(object):
-    store = StockPriceStore()
-
-    def process_item(self, item, spider):
-        """Process the parsed item.
-
-        Process the parsed item. If the item is a StockPriceItem, add it in the
-        store as a cached item (going to be flushed into the store). If the
-        item is an EndOfDocumentItem, flush all cached items into the store.
-
-        Args:
-            item: A StockPriceItem
-            spider: A spider
-        """
-        if isinstance(item, StockPriceItem):
             self.store.add(item)
         elif isinstance(item, EndOfDocumentItem):
             self.store.flush()

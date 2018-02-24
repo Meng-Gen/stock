@@ -45,6 +45,8 @@ class MetricNames():
         'StockDividends': u'股票股利小計',
         'EmployeeStockBonusRatio': u'員工配股率(%)',
         'BookValue': u'每股淨值(元)',
+        'MaxStockPrice': u'最高價',
+        'MinStockPrice': u'最低價',
     }
 
     def get(self, good_metric_name):
