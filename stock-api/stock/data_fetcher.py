@@ -10,7 +10,14 @@ from profitability_service import ProfitabilityService
 from revenue_index_service import RevenueIndexService
 from stock_code_service import StockCodeService
 
+from datetime import datetime
+
 import json
+
+
+def custom_json_serial(obj):
+    if isinstance(obj, datetime):
+        return obj.strftime('%Y-%m-%d')
 
 
 class DataFetcher():
@@ -39,7 +46,7 @@ class DataFetcher():
             'name': analysis,
             'analysis': self._get_analysis_data(analysis, stock),
         }
-        return json.dumps(data, default=str)
+        return json.dumps(data, default=custom_json_serial)
 
     def _get_analysis_data(self, analysis, stock):
         if analysis in self.services:

@@ -126,19 +126,19 @@ class TimeSeries(object):
 
     def max(self, target_date_frame):
         result = self.copy()
-        freq = self.__get_freq(target_date_frame)
+        freq = self.__get_freq_for_pandas(target_date_frame)
         result.df = result.df.groupby(pd.Grouper(freq=freq)).max()
         result.date_frame = target_date_frame
         return result
 
     def min(self, target_date_frame):
         result = self.copy()
-        freq = self.__get_freq(target_date_frame)
+        freq = self.__get_freq_for_pandas(target_date_frame)
         result.df = result.df.groupby(pd.Grouper(freq=freq)).min()
         result.date_frame = target_date_frame
         return result
 
-    def __get_freq(self, date_frame):
+    def __get_freq_for_pandas(self, date_frame):
         if date_frame == u'Yearly':
             return 'A'
         elif date_frame == u'Quarterly':
