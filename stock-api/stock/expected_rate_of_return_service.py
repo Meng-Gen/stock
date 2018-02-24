@@ -17,17 +17,18 @@ class ExpectedRateOfReturnService(BaseService):
     def build_data(self, stock_code, date_frame):
         net_profit = self.get_metric(stock_code, date_frame, 'NetProfit')
         equity = self.get_metric(stock_code, date_frame, 'Equity')
-        stock_price = self.get_metric(stock_code, date_frame, 'StockPrice')
+        max_stock_price = self.get_metric(stock_code, u'Monthly', 'MaxStockPrice')
+        min_stock_price = self.get_metric(stock_code, u'Monthly', 'MinStockPrice')
         book_value = self.get_metric(stock_code, date_frame, 'BookValue')
 
         # ROE = (NetProfit / Sales) * (Sales / Assets) * (Assets / Equity)
         roe = self.get_ratio(net_profit, equity, 4.0)
 
-        # max(PBR) = max(StockPrice) / BookValue
-        max_pbr = self.get_ratio(stock_price.max(date_frame), book_value)
+        # max(PBR) = MaxStockPrice / BookValue
+        max_pbr = self.get_ratio(max_stock_price.max(date_frame), book_value)
 
-        # min(PBR) = min(StockPrice) / BookValue
-        min_pbr = self.get_ratio(stock_price.min(date_frame), book_value)
+        # min(PBR) = MinStockPrice / BookValue
+        min_pbr = self.get_ratio(min_stock_price.min(date_frame), book_value)
 
         # max(ExpectedRateOfReturn) = ROE / min(PBR)
         max_expected_rate_of_return = self.get_ratio(roe, min_pbr)

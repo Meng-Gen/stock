@@ -91,87 +91,81 @@ DOWNLOAD_DELAY = 3
 
 # Configure metadata of financial statement title
 STATEMENT_TITLE_METADATA = {
-    # consolidated balance sheet (yearly)
-    u'\u500b\u80a1\u8cc7\u7522\u8ca0\u50b5\u5408\u4f75\u5e74\u8868': {
+    u'個股資產負債合併年表': {
         'DateFrame': 'Yearly',
         'Name': 'BalanceSheet',
         'IsSnapshot': True,
         'IsConsolidated': True,
     },
-    # consolidated balance sheet (quarterly)
-    u'\u500b\u80a1\u8cc7\u7522\u8ca0\u50b5\u5408\u4f75\u8ca1\u5831\u5b63\u8868': {
+    u'個股資產負債合併財報季表': {
         'DateFrame': 'Quarterly',
         'Name': 'BalanceSheet',
         'IsSnapshot': True,
         'IsConsolidated': True,
     },
-    # consolidated income statement (yearly)
-    u'\u500b\u80a1\u640d\u76ca\u5408\u4f75\u5e74\u8868': {
+    u'個股損益合併年表': {
         'DateFrame': 'Yearly',
         'Name': 'IncomeStatement',
         'IsSnapshot': False,
         'IsConsolidated': True,
     },
-    # consolidated income statement (quarterly)
-    u'\u500b\u80a1\u640d\u76ca\u5408\u4f75\u8ca1\u5831\u5b63\u8868': {
+    u'個股損益合併財報季表': {
         'DateFrame': 'Quarterly',
         'Name': 'IncomeStatement',
         'IsSnapshot': False,
         'IsConsolidated': True,
     },
-    # consolidated cash flow statement (yearly)
-    u'\u500b\u80a1\u73fe\u91d1\u6d41\u91cf\u5e74\u8868\u5408\u4f75\u8ca1\u5831': {
+    u'個股現金流量年表合併財報': {
         'DateFrame': 'Yearly',
         'Name': 'CashFlow',
         'IsSnapshot': False,
         'IsConsolidated': True,
     },
-    # consolidated cash flow statement (quarterly)
-    u'\u500b\u80a1\u73fe\u91d1\u6d41\u91cf\u5b63\u8868\u5408\u4f75\u8ca1\u5831': {
+    u'個股現金流量季表合併財報': {
         'DateFrame': 'Quarterly',
         'Name': 'CashFlow',
         'IsSnapshot': False,
         'IsConsolidated': True,
     },
-    # consolidated operating revenue (monthly)
-    u'\u500b\u80a1\u5408\u4f75\u6708\u71df\u6536': {
+    u'個股合併月營收': {
         'DateFrame': 'Monthly',
         'Name': 'OperatingRevenue',
         'IsSnapshot': False,
         'IsConsolidated': True,
     },
-    # capital increase history (yearly)
-    u'\u500b\u80a1\u80a1\u672c\u5f62\u6210': {
+    u'個股股本形成': {
         'DateFrame': 'Yearly',
         'Name': 'CapitalIncreaseHistory',
         'IsSnapshot': True,
         'IsConsolidated': False,
     },
-    # dividend policy (yearly)
-    u'\u500b\u80a1\u80a1\u5229\u653f\u7b56': {
+    u'個股股利政策': {
         'DateFrame': 'Yearly',
         'Name': 'DividendPolicy',
         'IsSnapshot': True,
         'IsConsolidated': False,
     },
-    # consolidated profitability (quarterly)
-    u'\u500b\u80a1\u7372\u5229\u80fd\u529b': {
+    u'個股獲利能力': {
         'DateFrame': 'Quarterly',
         'Name': 'Profitability',
         'IsSnapshot': False,
         'IsConsolidated': True,
     },
-    # consolidated financial analysis (yearly)
-    u'\u500b\u80a1\u8ca1\u52d9\u6bd4\u7387\u5408\u4f75\u5e74\u8868': {
+    u'個股財務比率合併年表': {
         'DateFrame': 'Yearly',
         'Name': 'FinancialAnalysis',
         'IsSnapshot': False,
         'IsConsolidated': True,
     },
-    # consolidated financial analysis (quarterly)
-    u'\u500b\u80a1\u8ca1\u52d9\u6bd4\u7387\u5408\u4f75\u8ca1\u5831\u5b63\u8868': {
+    u'個股財務比率合併財報季表': {
         'DateFrame': 'Quarterly',
         'Name': 'FinancialAnalysis',
+        'IsSnapshot': False,
+        'IsConsolidated': True,
+    },
+    u'個股月成交資訊': {
+        'DateFrame': 'Monthly',
+        'Name': 'StockPrice',
         'IsSnapshot': False,
         'IsConsolidated': True,
     },

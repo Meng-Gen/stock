@@ -1,6 +1,7 @@
 from calendar import monthrange
 from datetime import datetime
 from dateutil.rrule import MONTHLY
+from dateutil.rrule import YEARLY
 from dateutil.rrule import rrule
 
 
@@ -30,6 +31,12 @@ def build_datetime_from_roc_era_with_quarter(data):
     else:
         raise ValueError(u'Could not parse ROC era and quarter: {0}'.format(data))
 
+def build_datetime_from_roc_era_and_month(roc_era, month):
+    year = int(roc_era) + 1911
+    month = int(month)
+    day = monthrange(year, month)[1]
+    return datetime(year=year, month=month, day=day)
+
 def build_datetime_from_roc_era_with_month(data):
     roc_era_and_month = data.split('/')
     if len(roc_era_and_month) != 2:
@@ -54,3 +61,6 @@ def build_datetime_from_roc_era_with_month_and_day(data):
 
 def month_range(start_date, end_date):
     return list(rrule(freq=MONTHLY, dtstart=start_date.replace(day=1), until=end_date))[::-1]
+
+def year_range(start_date, end_date):
+    return list(rrule(freq=YEARLY, dtstart=start_date.replace(day=1).replace(month=1), until=end_date))[::-1]

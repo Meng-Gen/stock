@@ -126,11 +126,25 @@ class TimeSeries(object):
 
     def max(self, target_date_frame):
         result = self.copy()
+        freq = self.__get_freq(target_date_frame)
+        result.df = result.df.groupby(pd.Grouper(freq=freq)).max()
+        result.date_frame = target_date_frame
         return result
 
     def min(self, target_date_frame):
         result = self.copy()
+        freq = self.__get_freq(target_date_frame)
+        result.df = result.df.groupby(pd.Grouper(freq=freq)).min()
+        result.date_frame = target_date_frame
         return result
+
+    def __get_freq(self, date_frame):
+        if date_frame == u'Yearly':
+            return 'A'
+        elif date_frame == u'Quarterly':
+            return 'Q'
+        else:
+            raise ValueError(u'Cannot get freq for pandas: {0}'.format(date_frame))
 
     def __execute_binary_operation(self, operator, other):
         if self.date_frame != other.date_frame:
@@ -148,6 +162,8 @@ class TimeSeries(object):
 
         del result['left_value']
         del result['right_value']
+
+        result.dropna(inplace=True)
 
         return TimeSeries('', self.date_frame, self.is_snapshot, result)
 
